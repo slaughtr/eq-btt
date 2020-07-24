@@ -1,5 +1,3 @@
-// const dir = '/Volumes/[C] Win10/Users/dslaught/Desktop/TAKP'
-// const file = '/Volumes/[C] Win10/Users/dslaught/Desktop/TAKP/eqlog_Vaine_loginse.txt'
 const dir = '/users/dslaught/Desktop/PLAY/TAKP'
 const file = '/users/dslaught/Desktop/PLAY/TAKP/eqlog_Vaine_loginse.txt'
 
