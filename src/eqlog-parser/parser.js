@@ -64,6 +64,7 @@ const processLine = line => {
         if (current.HP_CURR) current.HP_CURR -= damage
         // sendToBTT
     } else if (tracking.TRACK_DPS) {
+
         if (/smash|smashes|hit|slash|claw|claws|crush|pierce|kick|bash|maul|gore|gores|slice|slices|slashes|crushes|hits|punch|punches|kicks|bashes|bites|pierces|mauls|backstab|backstabs|rends/.test(data)) {
             // Is it safe to assume if it wasn't YOU for it's us hit other or other hit other?
             /*
