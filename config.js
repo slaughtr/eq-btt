@@ -5,12 +5,18 @@ exports.config = {
         directionUUID: '608965DB-2494-4187-B2B0-6F5FAC79527D'
     },
     // should probably allow arrays
-    // logFiles: ['/users/dslaught/Desktop/PLAY/TAKP/eqlog_Vaine_loginse.txt', '/users/dslaught/Desktop/PLAY/TAKP/eqlog_Dreadsnot_loginse.txt']
-    logFile: '/users/dslaught/Desktop/PLAY/TAKP/eqlog_Dreadsnot_loginse.txt',
+    // logFiles: [process.env.EQ_DIR + 'eqlog_Vaine_loginse.txt', process.env.EQ_DIR + 'eqlog_Dreadsnot_loginse.txt']
+    logFile: process.env.EQ_DIR + 'eqlog_Dreadsnot_loginse.txt',
     connection: {
         port: 55896,
         domain: '127.0.0.1',
         secret: process.env.BTT_SECRET
     },
-    parseChannel: 'Parsetest'
+    parseChannel: 'Parsetest',
+    tracking: {
+        TRACK_DPS: true, // This MUST be true if ANY DPS is to be tracked
+        TRACK_PET_DPS: true, 
+        TRACK_PLAYER_DPS: true,
+        TRACK_OTHER_DPS: [], // just a thought for boxers
+    }
 }
