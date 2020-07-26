@@ -4,6 +4,7 @@ const colorNames = require('color-name-list')
 const { config: { connection: { domain, port, secret } } } = require('../../config')
 
 const sendToBTT = (UUID, text, color = 'Black', transparency = 255) => {
+    // TODO: figure out why this isn't working
     let { r = 255, g = 255, b = 255 } = colorNames.find(x => x.name === color)
 
     const bgColor = `${r},${g},${b},${transparency}`
