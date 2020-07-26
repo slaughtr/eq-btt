@@ -27,7 +27,7 @@ const playerDpsCalcTimer = setInterval(() => {
     for (const other of Object.keys(current.PLAYER_HIT_OTHER_DAMAGE)) {
         const damage = current.PLAYER_HIT_OTHER_DAMAGE[other]
         const DPS = damage / dpsDuration
-        console.log(`DPS against ${other} was ${DPS.toPrecision(4)} in the last ${dpsDuration / 1000} seconds. Total damage to ${other} was ${damage}`)
+        console.log(`\\nDPS against ${other} was ${DPS.toPrecision(4)} in the last ${dpsDuration / 1000} seconds. Total damage to ${other} was ${damage}\\n`)
         if (other === 'TOTAL') sendToBTT(config.UUIDs.dpsUUID, DPS, 'Cadmium Red', 255)
 
         // just for testing
@@ -51,16 +51,16 @@ const petDpsCalcTimer = setTimeout(() => {
 
 if (!config.tracking.TRACK_DPS) {
     clearInterval(playerDpsCalcTimer)
-    clearTimeout(petDpsCalcTimer)
 }
+clearTimeout(petDpsCalcTimer)
 
 // If I don't end up using this. to ref the emitter I can change to arrow functions
-dpsEvents.on('playerHitOther', function ({other, damage}) {
+dpsEvents.on('playerHitOther', function ({target: other, damage}) {
     if (current.PLAYER_HIT_OTHER_DAMAGE[other]) current.PLAYER_HIT_OTHER_DAMAGE[other] += +damage
-    else current.PLAYER_HIT_OTHER_DAMAGE[other] = 0
+    else current.PLAYER_HIT_OTHER_DAMAGE[other] = +damage
     current.PLAYER_HIT_OTHER_DAMAGE.TOTAL += +damage
     console.log('got hit, running total for ' + other, current.PLAYER_HIT_OTHER_DAMAGE[other])
-    console.log('got hit, running total for TOTAL', current.PLAYER_HIT_OTHER_DAMAGE.TOTAL)
+    // console.log('got hit, running total for TOTAL', current.PLAYER_HIT_OTHER_DAMAGE.TOTAL)
 })
 
 dpsEvents.on('petHitOther', function ({other, damage}) {

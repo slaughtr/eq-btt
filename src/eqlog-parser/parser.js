@@ -25,23 +25,16 @@ const current = {
 //     console.log('Tick')
 //     // HP TICK
 //     if (current.HP_CURR && current.HP_CURR >= current.HP_MAX + current.HP_REGEN) {
-
 //         current.IS_HP_TICKING = false
-
 //     } else if (current.HP_CURR && current.HP_CURR < current.HP_MAX && current.HP_REGEN) {
-
 //         current.HP_CURR += current.REGEN
 //         current.IS_HP_TICKING = true
 //     }
-
 //     // MANA TICK
 //     if (current.MANA_CURR && current.MANA_CURR >= current.MANA_MAX + current.MANA_REGEN) {
-
 //         current.IS_MANA_TICKING = false
 //         clearInterval(tick)
-
 //     } else if (current.MANA_CURR && current.MANA_CURR < current.MANA_MAX && current.MANA_REGEN) {
-
 //         current.MANA_CURR += current.REGEN
 //         current.IS_MANA_TICKING = true
 //     }
@@ -67,7 +60,7 @@ const processLine = line => {
         // TODO: benchmark if this should be singular first to match faster
         // https://github.com/kai4785/takp/blob/master/dps.py#L298 - referenced throughout
         const meleeVerbsReg = /smash|smashes|hit|slash|claw|claws|crush|pierce|kick|bash|maul|gore|gores|slice|slices|slashes|crushes|hits|punch|punches|kicks|bashes|bites|pierces|mauls|backstab|backstabs|rends/
-        
+
         if (meleeVerbsReg.test(data)) {
             // console.log('melee verbs match')
             /*
@@ -83,33 +76,33 @@ const processLine = line => {
             */
             const missMitReg = /YOU riposte|ripostes!|YOU dodge|dodges!|YOU parry|parries!|but miss/
 
-           if (!missMitReg.test(data)) {
-               console.log('not a miss')
-               // sorta based on self.melee_reg = re.compile(fr'^({self.pc_regexp}) ({self.melee_verbs}) ({self.pc_regexp}) for ([0-9]+) points? of damage\.')
-               // put plural verbs first so that we don't cut off the s in some cases
-               const hitLineSplitReg = /(\s)(punches|kicks|bashes|bites|pierces|mauls|slices|slashes|crushes|hits|gores|claws|smashes|backstabs|rends|smash|hit|slash|claw|crush|pierce|kick|bash|maul|gore|slice|punch|backstab)(\s)(.*)( for )(\d+)/
-                
-               const [attacker, , verb, , target, , damage] = data.split(hitLineSplitReg)
-               console.log(`${attacker} ${verb} ${target} for ${damage}`)
-                
+            if (!missMitReg.test(data)) {
+                // console.log('not a miss')
+                // sorta based on self.melee_reg = re.compile(fr'^({self.pc_regexp}) ({self.melee_verbs}) ({self.pc_regexp}) for ([0-9]+) points? of damage\.')
+                // put plural verbs first so that we don't cut off the s in some cases
+                const hitLineSplitReg = /(\s)(punches|kicks|bashes|bites|pierces|mauls|slices|slashes|crushes|hits|gores|claws|smashes|backstabs|rends|smash|hit|slash|claw|crush|pierce|kick|bash|maul|gore|slice|punch|backstab)(\s)(.*)( for )(\d+)/
+
+                const [attacker, , verb, , target, , damage] = data.split(hitLineSplitReg)
+                console.log(`${attacker} ${verb} ${target} for ${damage}`)
+
                 if (!current.IN_COMBAT) {
                     current.IN_COMBAT = true
                     dpsEvents.emit('combatStart')
                 }
-                
-                
+
+
                 if (tracking.TRACK_PLAYER_DPS && attacker === 'You') {
                     console.log('attacker === You  && target = ', target)
                     // ----- YOU HIT OTHER -----
                     // You slash tormented dead for 20 points of damage.
                     dpsEvents.emit('playerHitOther', { target, damage })
-                    
+
                 } else if (tracking.TRACK_PET_DPS && attacker === current.petName) {
                     // ----- PET HIT OTHER -----
                     // Vabarab hits tormented dead for 10 points of damage.
                     dpsEvents.emit('petHitOther', { other, damage })
                 } else {
-                    console.log('else')
+                    // console.log('Hit else in attack tree')
                     // ----- OTHER HIT OTHER -----
                     return
                 }
@@ -138,74 +131,76 @@ const processLine = line => {
             }
 
         } else if (/(have|has been) slain/.test(data)) {
-            dpsEvents.emit('otherDeat', {})
+            // dpsEvents.emit('otherDeath', {})
         }
 
     } else if (data.includes(config.parseChannel)) {
-    // * Possible to parse /say things for additional benefit		
-    // 	* mitigation things
-    // Get rid of "You tell Parsetest: 2, '" and the last '
-    const trimmed = data.substring(14 + config.parseChannel.length, data.length - 1)
-    const split = trimmed.split(' ')
-    const word = trimmed[0]
-    switch (word) {
-        case 'stats': {
-            // 	* stats IE You tell Parsetest: 2, 'str 85 agi 75 wis 91 sta 98 dex 84 int 75 cha 85'
-            const stats = split.reduce((acc, cur, i) => {
-                acc += cur.toUpperCase()
-                // split stats into two lines
-                if (i === Math.floor(trimmed.length / 2)) acc += '\n'
-                return acc
-            }, '')
+        // * Possible to parse /say things for additional benefit		
+        // 	* mitigation things
+        // Get rid of "You tell Parsetest: 2, '" and the last '
+        const trimmed = data.substring(14 + config.parseChannel.length, data.length - 1)
+        const split = trimmed.split(' ')
+        const word = trimmed[0]
+        switch (word) {
+            case 'stats': {
+                // 	* stats IE You tell Parsetest: 2, 'str 85 agi 75 wis 91 sta 98 dex 84 int 75 cha 85'
+                const stats = split.reduce((acc, cur, i) => {
+                    acc += cur.toUpperCase()
+                    // split stats into two lines
+                    if (i === Math.floor(trimmed.length / 2)) acc += '\n'
+                    return acc
+                }, '')
 
-            sendToBTT(config.UUIDs.statsUUID, stats, 'Black', 255)
-            break
+                sendToBTT(config.UUIDs.statsUUID, stats, 'Black', 255)
+                break
+            }
+            case 'hp': {
+                //  * current HP %
+                current.HP_CURR = trimmed[1]
+                // user sent "curr max" HP IE "50 100" to show current HP and max HP
+                // if they didn't max and curr are same but only set if no max set this session
+                if (trimmed[2] || !current.HP_MAX) current.HP_MAX = trimmed[2] ? trimmed[2] : trimmed[1]
+                // sendToBTT
+                break
+            }
+            case 'mana': {
+                //  * current mana %... but this number isn't show in client...
+                current.MANA_CURR = trimmed[1]
+                // user sent "curr max" MANA IE "50 100" to show current MANA and max MANA
+                // if they didn't max and curr are same but only set if no max set this session
+                if (trimmed[2] || !current.MANA_MAX) current.MANA_MAX = trimmed[2] ? trimmed[2] : trimmed[1]
+                // sendToBTT
+                break
+            }
+            case 'regen': {
+                // set regen
+            }
+            default: {
+                // nothing
+            }
         }
-        case 'hp': {
-            //  * current HP %
-            current.HP_CURR = trimmed[1]
-            // user sent "curr max" HP IE "50 100" to show current HP and max HP
-            // if they didn't max and curr are same but only set if no max set this session
-            if (trimmed[2] || !current.HP_MAX) current.HP_MAX = trimmed[2] ? trimmed[2] : trimmed[1]
-            // sendToBTT
-            break
-        }
-        case 'mana': {
-            //  * current mana %... but this number isn't show in client...
-            current.MANA_CURR = trimmed[1]
-            // user sent "curr max" MANA IE "50 100" to show current MANA and max MANA
-            // if they didn't max and curr are same but only set if no max set this session
-            if (trimmed[2] || !current.MANA_MAX) current.MANA_MAX = trimmed[2] ? trimmed[2] : trimmed[1]
-            // sendToBTT
-            break
-        }
-        case 'regen': {
-            // set regen
-        }
-        default: {
-            // nothing
-        }
+    } else if (data.includes('You have entered')) {
+        // * Current zone (links to wiki page)
+        // You have entered Dagnor's Cauldron.
+        const zoneName = data.substring(17, data.length - 1)
+        sendToBTT(config.UUIDs.zoneUUID, zoneName, 'Astronaut Blue', 200)
+    } else if (data.includes('You think you are heading')) {
+        // * Direction -- could use sense heading, could use loc math?
+        // You think you are heading North.
+        const direction = data.substring(26, data.length - 1)
+        sendToBTT(config.UUIDs.directionUUID, direction, 'White', 200)
+    } else if (data.includes('Your Location')) {
+        // * X, Y location
+        // Your Location is -319.37, 881.40, -92.25
+        // get rid of Z (for now) and remove the space
+        const xy = data.substring(16, data.lastIndexOf(',')).replace(' ', '')
+        sendToBTT(config.UUIDs.locUUID, xy, 'Big Yellow Taxi')
+    } else {
+        // do nothing
     }
-} else if (data.includes('You have entered')) {
-    // * Current zone (links to wiki page)
-    // You have entered Dagnor's Cauldron.
-    const zoneName = data.substring(17, data.length - 1)
-    sendToBTT(config.UUIDs.zoneUUID, zoneName, 'Astronaut Blue', 200)
-} else if (data.includes('You think you are heading')) {
-    // * Direction -- could use sense heading, could use loc math?
-    // You think you are heading North.
-    const direction = data.substring(26, data.length - 1)
-    sendToBTT(config.UUIDs.directionUUID, direction, 'White', 200)
-} else if (data.includes('Your Location')) {
-    // * X, Y location
-    // Your Location is -319.37, 881.40, -92.25
-    // get rid of Z (for now) and remove the space
-    const xy = data.substring(16, data.lastIndexOf(',')).replace(' ', '')
-    sendToBTT(config.UUIDs.locUUID, xy, 'Big Yellow Taxi')
-} else {
-    // do nothing
 }
-}
+
+exports.processLine = processLine
 
 tail.on('line', processLine)
 
