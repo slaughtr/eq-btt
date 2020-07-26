@@ -1,5 +1,5 @@
 const { Tail } = require('tail')
-const { config } = require('../config')
+const { config } = require('../../config')
 // TODO: array support
 const tail = new Tail(config.logFile)
 const PLAYER_NAME = config.logFile.split('_')[1]
@@ -21,31 +21,31 @@ const current = {
 }
 
 // Needs a lot of work
-const tick = setInterval(() => {
-    console.log('Tick')
-    // HP TICK
-    if (current.HP_CURR && current.HP_CURR >= current.HP_MAX + current.HP_REGEN) {
+// const tick = setInterval(() => {
+//     console.log('Tick')
+//     // HP TICK
+//     if (current.HP_CURR && current.HP_CURR >= current.HP_MAX + current.HP_REGEN) {
 
-        current.IS_HP_TICKING = false
+//         current.IS_HP_TICKING = false
 
-    } else if (current.HP_CURR && current.HP_CURR < current.HP_MAX && current.HP_REGEN) {
+//     } else if (current.HP_CURR && current.HP_CURR < current.HP_MAX && current.HP_REGEN) {
 
-        current.HP_CURR += current.REGEN
-        current.IS_HP_TICKING = true
-    }
+//         current.HP_CURR += current.REGEN
+//         current.IS_HP_TICKING = true
+//     }
 
-    // MANA TICK
-    if (current.MANA_CURR && current.MANA_CURR >= current.MANA_MAX + current.MANA_REGEN) {
+//     // MANA TICK
+//     if (current.MANA_CURR && current.MANA_CURR >= current.MANA_MAX + current.MANA_REGEN) {
 
-        current.IS_MANA_TICKING = false
-        clearInterval(tick)
+//         current.IS_MANA_TICKING = false
+//         clearInterval(tick)
 
-    } else if (current.MANA_CURR && current.MANA_CURR < current.MANA_MAX && current.MANA_REGEN) {
+//     } else if (current.MANA_CURR && current.MANA_CURR < current.MANA_MAX && current.MANA_REGEN) {
 
-        current.MANA_CURR += current.REGEN
-        current.IS_MANA_TICKING = true
-    }
-}, 6000)
+//         current.MANA_CURR += current.REGEN
+//         current.IS_MANA_TICKING = true
+//     }
+// }, 6000)
 
 const processLine = line => {
     // cut off timestamp
@@ -53,6 +53,7 @@ const processLine = line => {
     const { tracking } = config
 
     if (data.includes('YOU for')) {
+        dpsEvents.emit('combatStart')
         // TODO: wrap this in with the else below so you can track DPS against you
         if (!tracking.TRACK_HEALTH) return
         // Torven: That data was just from me using ctrl-f in a text editor after copying snips of log into new files. I just searched for 'YOU, but misses!' and 'YOU for'.
@@ -65,7 +66,10 @@ const processLine = line => {
     } else if (tracking.TRACK_DPS) {
         // TODO: benchmark if this should be singular first to match faster
         // https://github.com/kai4785/takp/blob/master/dps.py#L298 - referenced throughout
-        if (/smash|smashes|hit|slash|claw|claws|crush|pierce|kick|bash|maul|gore|gores|slice|slices|slashes|crushes|hits|punch|punches|kicks|bashes|bites|pierces|mauls|backstab|backstabs|rends/.test(data)) {
+        const meleeVerbsReg = /smash|smashes|hit|slash|claw|claws|crush|pierce|kick|bash|maul|gore|gores|slice|slices|slashes|crushes|hits|punch|punches|kicks|bashes|bites|pierces|mauls|backstab|backstabs|rends/
+        
+        if (meleeVerbsReg.test(data)) {
+            // console.log('melee verbs match')
             /*
             Live DPS
             self.melee_verbs = "smash|smashes|hit|slash|claw|claws|crush|pierce|kick|bash|maul|gore|gores|slice|slices|slashes|crushes|hits|punch|punches|kicks|bashes|bites|pierces|mauls|backstab|backstabs|rends"
@@ -77,10 +81,16 @@ const processLine = line => {
             self.death_re3 = re.compile(fr'({self.pc_regexp}) died\.')
             self.heal_re = re.compile(f'(You) have been (healed) for ([0-9]+) points? of damage\.')
             */
-           if (!/YOU riposte|ripostes!|YOU dodge|dodges!|YOU parry|parries!|but miss/.test(line)) {
+            const missMitReg = /YOU riposte|ripostes!|YOU dodge|dodges!|YOU parry|parries!|but miss/
+
+           if (!missMitReg.test(data)) {
+               console.log('not a miss')
                // sorta based on self.melee_reg = re.compile(fr'^({self.pc_regexp}) ({self.melee_verbs}) ({self.pc_regexp}) for ([0-9]+) points? of damage\.')
                // put plural verbs first so that we don't cut off the s in some cases
-                const [attacker, , verb, , target, , damage] = line.split(/(\s)(punches|kicks|bashes|bites|pierces|mauls|slices|slashes|crushes|hits|gores|claws|smashes|backstabs|rends|smash|hit|slash|claw|crush|pierce|kick|bash|maul|gore|slice|punch|backstab)(\s)(.*)( for )(\d+)/)
+               const hitLineSplitReg = /(\s)(punches|kicks|bashes|bites|pierces|mauls|slices|slashes|crushes|hits|gores|claws|smashes|backstabs|rends|smash|hit|slash|claw|crush|pierce|kick|bash|maul|gore|slice|punch|backstab)(\s)(.*)( for )(\d+)/
+                
+               const [attacker, , verb, , target, , damage] = data.split(hitLineSplitReg)
+               console.log(`${attacker} ${verb} ${target} for ${damage}`)
                 
                 if (!current.IN_COMBAT) {
                     current.IN_COMBAT = true
@@ -88,33 +98,49 @@ const processLine = line => {
                 }
                 
                 
-                if (tracking.TRACK_PLAYER_DPS && data.startsWith('You')) {
+                if (tracking.TRACK_PLAYER_DPS && attacker === 'You') {
+                    console.log('attacker === You  && target = ', target)
+                    // ----- YOU HIT OTHER -----
                     // You slash tormented dead for 20 points of damage.
-                    const other = data.split(/You smash|hit|slash|claw|crush|pierce|kick|bash|maul|gore|slice|punch|backstab/)[1].split(' for ')
-                    dpsEvents.emit('playerHitOther', { other, damage })
+                    dpsEvents.emit('playerHitOther', { target, damage })
                     
-                } else if (tracking.TRACK_PET_DPS && data.includes(current.petName)) {
-                    
+                } else if (tracking.TRACK_PET_DPS && attacker === current.petName) {
+                    // ----- PET HIT OTHER -----
+                    // Vabarab hits tormented dead for 10 points of damage.
+                    dpsEvents.emit('petHitOther', { other, damage })
+                } else {
+                    console.log('else')
+                    // ----- OTHER HIT OTHER -----
+                    return
                 }
             }
 
+            // These have to be parsed totally separately
         } else if (data.includes('lands a Crippling Blow')) {
 
             if (tracking.TRACK_PLAYER_DPS && data.startsWith(PLAYER_NAME)) {
 
             } else if (tracking.TRACK_PET_DPS && data.startsWith(current.PET_NAME)) {
 
+            } else {
+                // ----- OTHER HIT OTHER -----
+                return
             }
-            // casing on Scores here??
-        } else if (data.includes('Scores a critical hit')) {
+        } else if (data.includes('cores a critical hit')) {
 
             if (tracking.TRACK_PLAYER_DPS && data.startsWith(PLAYER_NAME)) {
 
             } else if (tracking.TRACK_PET_DPS && data.startsWith(current.PET_NAME)) {
 
+            } else {
+                // ----- OTHER HIT OTHER -----
+                return
             }
 
+        } else if (/(have|has been) slain/.test(data)) {
+            dpsEvents.emit('otherDeat', {})
         }
+
     } else if (data.includes(config.parseChannel)) {
     // * Possible to parse /say things for additional benefit		
     // 	* mitigation things

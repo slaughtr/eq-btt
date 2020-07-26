@@ -2,7 +2,7 @@ const EventEmitter = require("events")
 class DPSEmitter extends EventEmitter { } // this is apparently recommended for EventEmitter
 const dpsEvents = new DPSEmitter()
 exports.dpsEvents = dpsEvents
-const { config } = require('./config')
+const { config } = require('../../config')
 const { sendToBTT } = require('../btt-messenger/messenger')
 
 const current = {
@@ -27,8 +27,11 @@ const playerDpsCalcTimer = setInterval(() => {
     for (const other of Object.keys(current.PLAYER_HIT_OTHER_DAMAGE)) {
         const damage = current.PLAYER_HIT_OTHER_DAMAGE[other]
         const DPS = damage / dpsDuration
-        console.log(`DPS against ${other} was ${DPS} in the last ${dpsDuration / 1000} seconds.`)
+        console.log(`DPS against ${other} was ${DPS.toPrecision(4)} in the last ${dpsDuration / 1000} seconds. Total damage to ${other} was ${damage}`)
         if (other === 'TOTAL') sendToBTT(config.UUIDs.dpsUUID, DPS, 'Cadmium Red', 255)
+
+        // just for testing
+        current.PLAYER_HIT_OTHER_DAMAGE = {TOTAL: 0}
     }
 
 }, dpsDuration)
@@ -46,10 +49,18 @@ const petDpsCalcTimer = setTimeout(() => {
 
 }, dpsDuration)
 
+if (!config.tracking.TRACK_DPS) {
+    clearInterval(playerDpsCalcTimer)
+    clearTimeout(petDpsCalcTimer)
+}
+
 // If I don't end up using this. to ref the emitter I can change to arrow functions
 dpsEvents.on('playerHitOther', function ({other, damage}) {
-    current.PLAYER_HIT_OTHER_DAMAGE[other] += damage
-    current.PLAYER_HIT_OTHER_DAMAGE.TOTAL += damage
+    if (current.PLAYER_HIT_OTHER_DAMAGE[other]) current.PLAYER_HIT_OTHER_DAMAGE[other] += +damage
+    else current.PLAYER_HIT_OTHER_DAMAGE[other] = 0
+    current.PLAYER_HIT_OTHER_DAMAGE.TOTAL += +damage
+    console.log('got hit, running total for ' + other, current.PLAYER_HIT_OTHER_DAMAGE[other])
+    console.log('got hit, running total for TOTAL', current.PLAYER_HIT_OTHER_DAMAGE.TOTAL)
 })
 
 dpsEvents.on('petHitOther', function ({other, damage}) {
@@ -58,8 +69,13 @@ dpsEvents.on('petHitOther', function ({other, damage}) {
 })
 
 dpsEvents.on('combatStart', function () {
-    if (config.tracking.TRACK_PLAYER_DPS) playerDpsCalcTimer()
-    if (config.tracking.TRACK_PET_DPS) petDpsCalcTimer()
+    // if (config.tracking.TRACK_PLAYER_DPS) playerDpsCalcTimer
+    // if (config.tracking.TRACK_PET_DPS) petDpsCalcTimer
+    if (!current.IN_COMBAT) {
+        current.IN_COMBAT = true
+        clearInterval(playerDpsCalcTimer)
+        playerDpsCalcTimer
+    }
 })
 
 dpsEvents.on('combatEnd', function () {
