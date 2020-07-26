@@ -3,7 +3,9 @@ exports.config = {
         locUUID: 'EDA9574A-E341-4D52-8FB6-BC891EA1B3F3',
         zoneUUID: '77A9DA3C-77F9-4769-85DD-D70F3719BF83',
         directionUUID: '608965DB-2494-4187-B2B0-6F5FAC79527D',
-        dpsUUID: '34EB234B-C378-4FBD-9A78-86A40D1620C9',
+        // dpsUUID: '34EB234B-C378-4FBD-9A78-86A40D1620C9', // all apps
+        dpsUUID: '5A7B5EB2-A6B2-45AF-AE51-741100C17240', // parallels
+        statsUUID: '741C535B-2613-4DC2-AB36-94717155B085',
         petDpsUUID: ''
     },
     // should probably allow arrays
@@ -20,6 +22,7 @@ exports.config = {
         TRACK_PET_DPS: false, 
         TRACK_PLAYER_DPS: true,
         TRACK_OTHER_DPS: [], // just a thought for boxers
-        DPS_DURATION: 10000, // time in ms between DPS calcs
+        // DPS_DURATION: 6000, // time in ms between DPS calcs
+        TRACK_HEALTH: true
     }
 }

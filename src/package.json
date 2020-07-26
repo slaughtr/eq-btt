@@ -13,5 +13,9 @@
     "color-name-list": "^6.4.0",
     "node-fetch": "^2.6.0",
     "tail": "^2.0.4"
+  },
+  "devDependencies": {
+    "dayjs": "^1.8.30",
+    "line-by-line": "^0.1.6"
   }
 }
