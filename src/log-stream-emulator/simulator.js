@@ -12,12 +12,14 @@ const sleep = time => {
 
 const { processLine } = require('../eqlog-parser/parser')
 
-let prevTime = dayjs('Wed Sep 18 02:26:20 2013')
+let prevTime = dayjs()
+// let prevTime = dayjs('Wed Sep 18 02:26:20 2013')
 let prevLine = ''
 
 lr.on('error', console.error)
 
 lr.on('line', line => {
+    // console.log(line)
     const lineTime = dayjs(line.substring(1, 25))
 
     if (prevTime) {
@@ -25,7 +27,10 @@ lr.on('line', line => {
 
         lr.pause()
 
-        sleep((lineTime.valueOf() - prevTime.valueOf())).then(() => {
+        const sleepTime = (lineTime.valueOf() - prevTime.valueOf()) / 100
+        // console.log('sleepTime: ', sleepTime)
+
+        sleep(sleepTime).then(() => {
             prevLine = line
             prevTime = lineTime
             lr.resume()

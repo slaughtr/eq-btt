@@ -4,22 +4,8 @@ const { config } = require('../../config')
 const tail = new Tail(config.logFile)
 
 const { sendToBTT } = require('../btt-messenger/messenger')
-const { dpsEvents } = require('./dps-events')
-
-// for tracking things like HP etc
-const current = {
-    HP_CURR: null,
-    HP_MAX: null,
-    HP_REGEN: null,
-    IS_HP_TICKING: false,
-    MANA_CURR: null,
-    MANA_MAX: null,
-    MANA_REGEN: null,
-    IS_MANA_TICKING: false,
-    IN_COMBAT: false,
-    HP_REGEN: 1,
-    PLAYER_NAME: config.logFile.split('_')[1]
-}
+const { dpsParsing, playerGetsHitParsing } = require('./dps-parsing')
+const { current } = require('../current')
 
 setInterval(() => {
     // console.log('Tick')
@@ -29,6 +15,14 @@ setInterval(() => {
     Seems to track fairly well...might work slightly better to 
     take a sitting and standing regen rate and average, then do floor()
     to report an int but that seems just as flimsy 
+    Could add sit/stand and encourage using a hotkey for it? 
+    Try to guess? what are some indications you're sitting? There's plenty that you're standing...
+        * prevLoc/newLoc different - standing
+        * "You must be standing to..." - sitting
+        * Meditation skillups - sitting
+        * Anything combat related - standing
+        * Casting a spell - standing
+        * 
     */
     if (current.HP_CURR && current.HP_CURR >= current.HP_MAX + current.HP_REGEN) {
         current.IS_HP_TICKING = false
@@ -61,87 +55,11 @@ const processLine = line => {
     const { tracking } = config // ease of use
 
     if (data.includes('YOU for')) {
-        // console.log('got YOU for')
-        dpsEvents.emit('combatStart')
-        // TODO: wrap this in with the else below so you can track DPS against you
-        if (!tracking.TRACK_HEALTH) return
-        // Torven: That data was just from me using ctrl-f in a text editor after copying snips of log into new files. I just searched for 'YOU, but misses!' and 'YOU for'.
-        // seems like it's a probably solid way to do it
-        // * Take some guesses on current HP?
-        // this won't work if mob has number in name (does that ever happen?)
-        const damage = parseInt(/\b\d+\b/g.exec(data)[0])
-        console.log('OTHER hit PLAYER for ', damage)
-        
-        // TODO: centralize this and dps.current
-        if (current.HP_CURR) current.HP_CURR -= damage
-        else current.HP_CURR = current.HP_MAX - damage
-
-        sendToBTT(config.UUIDs.statsUUID, `${current.HP_CURR}/${current.HP_MAX}`, 'Black', 255)
-
+        playerGetsHitParsing(data)
     } else if (tracking.TRACK_DPS && meleeVerbsReg.test(data)) {
-            /*
-            self.death_re1 = re.compile(fr'({self.pc_regexp}) have slain ({self.pc_regexp})!')
-            self.death_re2 = re.compile(fr'({self.pc_regexp}) (has|have) been slain by ({self.pc_regexp})!')
-            self.death_re3 = re.compile(fr'({self.pc_regexp}) died\.')
-            self.heal_re = re.compile(f'(You) have been (healed) for ([0-9]+) points? of damage\.')
-            */
-            
-            if (data.includes('was hit by non-melee for')) {
-                // get target, damage
-                const [target, damage] = data.split(/(?:\swas hit by non-melee for\s)(\d+)/)
-
-                dpsEvents.emit('playerSpellDamage', { target, damage })
-            } else if (data.includes('lands a Crippling Blow')) {
-                // TODO
-                return
-            } else if (data.includes('cores a critical hit')) {
-                // TODO
-                return
-            } else if (/(have|has been) slain/.test(data)) {
-                // TODO
-                // dpsEvents.emit('otherDeath', {})
-                return
-            } else if (data.includes('thorns')) {
-                // TODO
-                return
-            }  else if (!/YOU riposte|ripostes!|YOU dodge|dodges!|YOU parry|parries!|but miss/.test(data)) {
-
-                // sorta based on self.melee_reg = re.compile(fr'^({self.pc_regexp}) ({self.melee_verbs}) ({self.pc_regexp}) for ([0-9]+) points? of damage\.')
-                // put plural verbs first so that we don't cut off the s in some cases
-                const hitLineSplitReg = /(\s)(punches|kicks|bashes|bites|pierces|mauls|slices|slashes|crushes|hits|gores|claws|smashes|backstabs|rends|smash|hit|slash|claw|crush|pierce|kick|bash|maul|gore|slice|punch|backstab)(\s)(.*)( for )(\d+)/
-
-                const [attacker, , verb, , target, , damage] = data.split(hitLineSplitReg)
-                console.log(`${attacker} ${verb} ${target} for ${damage}`)
-                if (!attacker || !target || !damage) {
-                    console.error(`!attacker ${attacker} || !target ${target} || !damage ${damage}`)
-                    return 
-                }
-
-                // don't think I need this
-                // if (!current.IN_COMBAT) {
-                //     // TODO - combine with dps.current
-                //     current.IN_COMBAT = true
-                //     dpsEvents.emit('combatStart')
-                // }
-
-                if (tracking.TRACK_PLAYER_DPS && attacker === 'You') {
-                    console.log('PLAYER hit OTHER ', target, damage)
-                    // ----- YOU HIT OTHER -----
-                    // You slash tormented dead for 20 points of damage.
-                    dpsEvents.emit('playerHitOther', { target, damage })
-
-                } else if (tracking.TRACK_PET_DPS && attacker === current.petName) {
-                    // ----- PET HIT OTHER -----
-                    // Vabarab hits tormented dead for 10 points of damage.
-                    dpsEvents.emit('petHitOther', { target, damage })
-                } else {
-                    // ----- OTHER HIT OTHER -----
-                    // console.log('Hit else in attack tree')
-                    // TODO
-                    return
-                }
-            }
+           dpsParsing(data)
     } else if (data.includes('You have been healed for')) {
+        // TODO: add bind wound
         const healAmount = +data.split(/\D+/)[1]
         // console.log('healing for ', healAmount)
         

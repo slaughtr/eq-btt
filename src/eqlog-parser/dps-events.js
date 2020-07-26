@@ -6,20 +6,7 @@ const dpsEvents = new DPSEmitter()
 
 const { config } = require('../../config')
 const { sendToBTT } = require('../btt-messenger/messenger')
-
-const current = {
-    PLAYER_HIT_OTHER_DAMAGE: { TOTAL: 0 },
-    PLAYER_SPELL_DAMAGE: { TOTAL: 0 },
-    PET_HIT_OTHER_DAMAGE: { TOTAL: 0 },
-    OTHER_HIT_PLAYER_DAMAGE: { TOTAL: 0 },
-    OTHER_HIT_PET_DAMAGE: { TOTAL: 0 },
-    TEN_SEC_AVERAGE: { TOTAL: 0 },
-    TEN_SEC_HISTORY: [],
-    IS_IN_COMBAT: false,
-    LAST_COMBAT_PING: 0,
-    COMBAT_START: Number.MAX_SAFE_INTEGER,
-    TURNED_OFF_DPS: false
-}
+const { current } = require('../current')
 
 // oooh nullish coalescing
 const dpsDuration = config.tracking.DPS_DURATION ?? 10000
