@@ -4,7 +4,7 @@ const { config } = require('../../config')
 const tail = new Tail(config.logFile)
 
 const { sendToBTT } = require('../btt-messenger/messenger')
-const { dpsEvents } = require('./dps')
+const { dpsEvents } = require('./dps-events')
 
 // for tracking things like HP etc
 const current = {
