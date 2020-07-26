@@ -31,12 +31,13 @@ const playerDpsCalcTimer = setInterval(() => {
     if (current.IS_IN_COMBAT) {
         // calculate for last dpsDuration  
         for (const other of Object.keys(current.PLAYER_HIT_OTHER_DAMAGE)) {
-            const seconds = (now() - current.COMBAT_START) / 1000
+            const seconds = (dayjs().valueOf() - current.COMBAT_START) / 1000
             const damage = current.PLAYER_HIT_OTHER_DAMAGE[other]
             const spellDamage = current.PLAYER_SPELL_DAMAGE[other] || 0
             const meleeDPS = damage / seconds
             const spellDPS = spellDamage / seconds
             const totalDPS = meleeDPS + spellDPS
+            
             console.log(`
             DPS against ${other} was ${meleeDPS} in the last ${seconds} seconds. 
             ${spellDPS ? `Spell DPS against ${other} was ${spellDPS} in the last ${seconds} seconds.
@@ -45,7 +46,8 @@ const playerDpsCalcTimer = setInterval(() => {
             Total damage to ${other} was ${damage + spellDamage} and spell damage was ${spellDamage}
             `)
             // console.log((now() - start)/1000)
-            if (other === 'TOTAL') sendToBTT(config.UUIDs.dpsUUID, totalDPS.toPrecision(4), 'Cadmium Red', 255)
+            if (other === 'TOTAL') sendToBTT(config.UUIDs.dpsUUID, Math.floor(totalDPS), 'Cadmium Red', 255)
+            // if (other === 'TOTAL') sendToBTT(config.UUIDs.dpsUUID, totalDPS.toPrecision(2), 'Cadmium Red', 255)
 
         }
 
@@ -71,7 +73,7 @@ const petDpsCalcTimer = setInterval(() => {
 
 }, 5000)
 
-if (!config.tracking.TRACK_DPS) {
+if (config.tracking.TRACK_DPS) {
     // If I don't end up using this. to ref the emitter I can change to arrow functions
     dpsEvents.on('playerHitOther', function ({ target: other, damage = 0 }) {
         dpsEvents.emit('combatStart')
@@ -79,7 +81,6 @@ if (!config.tracking.TRACK_DPS) {
         if (!current.PLAYER_HIT_OTHER_DAMAGE[other]) current.PLAYER_HIT_OTHER_DAMAGE[other] = 0
 
         current.PLAYER_HIT_OTHER_DAMAGE[other] = +damage
-
 
         current.PLAYER_HIT_OTHER_DAMAGE.TOTAL += +damage
         // console.log('got hit, running total for ' + other, current.PLAYER_HIT_OTHER_DAMAGE[other])
@@ -110,7 +111,7 @@ if (!config.tracking.TRACK_DPS) {
         // if (config.tracking.TRACK_PET_DPS) petDpsCalcTimer
         if (!current.IN_COMBAT) {
             current.IS_IN_COMBAT = true
-            current.COMBAT_START = now()
+            current.COMBAT_START = dayjs().valueOf()
         }
     })
 

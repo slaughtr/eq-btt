@@ -70,7 +70,7 @@ const processLine = line => {
         // * Take some guesses on current HP?
         // this won't work if mob has number in name (does that ever happen?)
         const damage = parseInt(/\b\d+\b/g.exec(data)[0])
-        console.log('PLAYER hit by other for: ', damage)
+        console.log('OTHER hit PLAYER for ', damage)
         
         // TODO: centralize this and dps.current
         if (current.HP_CURR) current.HP_CURR -= damage
@@ -125,7 +125,7 @@ const processLine = line => {
                 // }
 
                 if (tracking.TRACK_PLAYER_DPS && attacker === 'You') {
-                    // console.log('attacker === You  && target = ', target)
+                    console.log('PLAYER hit OTHER ', target, damage)
                     // ----- YOU HIT OTHER -----
                     // You slash tormented dead for 20 points of damage.
                     dpsEvents.emit('playerHitOther', { target, damage })
