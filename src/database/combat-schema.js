@@ -32,6 +32,7 @@ exports.combatSchema = {
     "description": "Describes the combat document",
     "examples": [
         {
+            "id": "qjPKhh",
             "start": 1595808387,
             "end": 1595808402,
             "length": 35,
@@ -51,7 +52,7 @@ exports.combatSchema = {
             "totalDPS": 0.96
         }
     ],
-    "required": ["attacker", "target", "meleeDamage", "spellDamage", "totalDamage"],
+    "required": ["id", "attacker", "target", "meleeDamage", "spellDamage", "totalDamage"],
     "properties": {
         "id": {
             "type": "string",

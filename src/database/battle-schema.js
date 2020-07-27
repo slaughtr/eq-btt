@@ -4,7 +4,7 @@ const uid = new ShortUniqueId();
 
 // Used this + https://www.jsonschema.net/home to make schema
 const baseJson = {
-    "id": 1,
+    "id": 'ag93fS',
     "start": 1595808387,
     "end": 1595808402,
     "length": 25,
@@ -33,7 +33,7 @@ exports.battleSchema = {
     "description": "Describes the battle document",
     "examples": [
         {
-            "id": 1,
+            "id": 'ag93fS',
             "start": 1595808387,
             "end": 1595808402,
             "length": 25,
@@ -47,7 +47,6 @@ exports.battleSchema = {
                     "ref": "combat"
                 }
             ],
-            "playerOverallDPS": 2.0,
             "others": [
                 {
                     "type": "object",
@@ -56,7 +55,7 @@ exports.battleSchema = {
             ]
         }
     ],
-    "required": [],
+    "required": ["id", "start", "end", "others"],
     "properties": {
         "id": {
             "type": "string",
@@ -102,8 +101,8 @@ exports.battleSchema = {
             "title": "combats schema",
             "description": "Array of combat objects that ocurred during this battle",
             "ref": "combat",
-            "items": { 
-                "type": "object" 
+            "items": {
+                "type": "object"
             }
         },
         "others": {
