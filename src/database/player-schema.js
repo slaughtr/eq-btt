@@ -13,6 +13,9 @@ const baseJSON = {
         "max": 778
     },
     "regen": {
+        "iksarOrTroll": false,
+        "beginLevel": 1,
+        "endLevel": 19,
         "sitting": 2,
         "rested": 2,
         "feigned": 1,
@@ -37,7 +40,7 @@ const baseJSON = {
         "INT": 123,
         "WIS": 123,
         "CHA": 123,
-        "RESISTS": {
+        "RES": {
             "magic": 25,
             "poison": 25,
             "disease": 25,
@@ -49,7 +52,7 @@ const baseJSON = {
 }
 
 
-exports.characterSchema = `{
+exports.playerSchema = {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "http://example.com/example.json",
     "type": "object",
@@ -72,6 +75,9 @@ exports.characterSchema = `{
                 "max": 778
             },
             "regen": {
+                "iksarOrTroll": false,
+                "beginLevel": 1,
+                "endLevel": 19,
                 "sitting": 2,
                 "rested": 2,
                 "feigned": 1,
@@ -96,7 +102,7 @@ exports.characterSchema = `{
                 "INT": 123,
                 "WIS": 123,
                 "CHA": 123,
-                "RESISTS": {
+                "RES": {
                     "magic": 25,
                     "poison": 25,
                     "disease": 25,
@@ -106,21 +112,7 @@ exports.characterSchema = `{
             }
         }
     ],
-    "required": [
-        "id",
-        "name",
-        "level",
-        "class",
-        "race",
-        "hp",
-        "mana",
-        "regen",
-        "pet",
-        "zone",
-        "loc",
-        "heading",
-        "stats"
-    ],
+    "required": [],
     "properties": {
         "id": {
             "$id": "#/properties/id",
@@ -184,10 +176,7 @@ exports.characterSchema = `{
                     "max": 778
                 }
             ],
-            "required": [
-                "current",
-                "max"
-            ],
+            "required": [],
             "properties": {
                 "current": {
                     "$id": "#/properties/hp/properties/current",
@@ -224,10 +213,7 @@ exports.characterSchema = `{
                     "max": 778
                 }
             ],
-            "required": [
-                "current",
-                "max"
-            ],
+            "required": [],
             "properties": {
                 "current": {
                     "$id": "#/properties/mana/properties/current",
@@ -253,80 +239,8 @@ exports.characterSchema = `{
             "additionalProperties": false
         },
         "regen": {
-            "$id": "#/properties/regen",
             "type": "object",
-            "title": "The regen schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "examples": [
-                {
-                    "sitting": 2,
-                    "rested": 2,
-                    "feigned": 1,
-                    "standing": 1,
-                    "hungry": 0
-                }
-            ],
-            "required": [
-                "sitting",
-                "rested",
-                "feigned",
-                "standing",
-                "hungry"
-            ],
-            "properties": {
-                "sitting": {
-                    "$id": "#/properties/regen/properties/sitting",
-                    "type": "integer",
-                    "title": "The sitting schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": 0,
-                    "examples": [
-                        2
-                    ]
-                },
-                "rested": {
-                    "$id": "#/properties/regen/properties/rested",
-                    "type": "integer",
-                    "title": "The rested schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": 0,
-                    "examples": [
-                        2
-                    ]
-                },
-                "feigned": {
-                    "$id": "#/properties/regen/properties/feigned",
-                    "type": "integer",
-                    "title": "The feigned schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": 0,
-                    "examples": [
-                        1
-                    ]
-                },
-                "standing": {
-                    "$id": "#/properties/regen/properties/standing",
-                    "type": "integer",
-                    "title": "The standing schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": 0,
-                    "examples": [
-                        1
-                    ]
-                },
-                "hungry": {
-                    "$id": "#/properties/regen/properties/hungry",
-                    "type": "integer",
-                    "title": "The hungry schema",
-                    "description": "An explanation about the purpose of this instance.",
-                    "default": 0,
-                    "examples": [
-                        0
-                    ]
-                }
-            },
-            "additionalProperties": false
+            "ref": "regen"
         },
         "pet": {
             "$id": "#/properties/pet",
@@ -339,9 +253,7 @@ exports.characterSchema = `{
                     "name": "Soandso"
                 }
             ],
-            "required": [
-                "name"
-            ],
+            "required": [],
             "properties": {
                 "name": {
                     "$id": "#/properties/pet/properties/name",
@@ -379,11 +291,7 @@ exports.characterSchema = `{
                     "z": 1
                 }
             ],
-            "required": [
-                "x",
-                "y",
-                "z"
-            ],
+            "required": [],
             "properties": {
                 "x": {
                     "$id": "#/properties/loc/properties/x",
@@ -443,7 +351,7 @@ exports.characterSchema = `{
                     "INT": 123,
                     "WIS": 123,
                     "CHA": 123,
-                    "RESISTS": {
+                    "RES": {
                         "magic": 25,
                         "poison": 25,
                         "disease": 25,
@@ -452,16 +360,7 @@ exports.characterSchema = `{
                     }
                 }
             ],
-            "required": [
-                "STR",
-                "STA",
-                "AGI",
-                "DEX",
-                "INT",
-                "WIS",
-                "CHA",
-                "RESISTS"
-            ],
+            "required": [],
             "properties": {
                 "STR": {
                     "$id": "#/properties/stats/properties/STR",
@@ -533,10 +432,10 @@ exports.characterSchema = `{
                         123
                     ]
                 },
-                "RESISTS": {
-                    "$id": "#/properties/stats/properties/RESISTS",
+                "RES": {
+                    "$id": "#/properties/stats/properties/RES",
                     "type": "object",
-                    "title": "The RESISTS schema",
+                    "title": "The RES schema",
                     "description": "An explanation about the purpose of this instance.",
                     "default": {},
                     "examples": [
@@ -548,16 +447,10 @@ exports.characterSchema = `{
                             "cold": 25
                         }
                     ],
-                    "required": [
-                        "magic",
-                        "poison",
-                        "disease",
-                        "fire",
-                        "cold"
-                    ],
+                    "required": [],
                     "properties": {
                         "magic": {
-                            "$id": "#/properties/stats/properties/RESISTS/properties/magic",
+                            "$id": "#/properties/stats/properties/RES/properties/magic",
                             "type": "integer",
                             "title": "The magic schema",
                             "description": "An explanation about the purpose of this instance.",
@@ -567,7 +460,7 @@ exports.characterSchema = `{
                             ]
                         },
                         "poison": {
-                            "$id": "#/properties/stats/properties/RESISTS/properties/poison",
+                            "$id": "#/properties/stats/properties/RES/properties/poison",
                             "type": "integer",
                             "title": "The poison schema",
                             "description": "An explanation about the purpose of this instance.",
@@ -577,7 +470,7 @@ exports.characterSchema = `{
                             ]
                         },
                         "disease": {
-                            "$id": "#/properties/stats/properties/RESISTS/properties/disease",
+                            "$id": "#/properties/stats/properties/RES/properties/disease",
                             "type": "integer",
                             "title": "The disease schema",
                             "description": "An explanation about the purpose of this instance.",
@@ -587,7 +480,7 @@ exports.characterSchema = `{
                             ]
                         },
                         "fire": {
-                            "$id": "#/properties/stats/properties/RESISTS/properties/fire",
+                            "$id": "#/properties/stats/properties/RES/properties/fire",
                             "type": "integer",
                             "title": "The fire schema",
                             "description": "An explanation about the purpose of this instance.",
@@ -597,7 +490,7 @@ exports.characterSchema = `{
                             ]
                         },
                         "cold": {
-                            "$id": "#/properties/stats/properties/RESISTS/properties/cold",
+                            "$id": "#/properties/stats/properties/RES/properties/cold",
                             "type": "integer",
                             "title": "The cold schema",
                             "description": "An explanation about the purpose of this instance.",
@@ -614,4 +507,4 @@ exports.characterSchema = `{
         }
     },
     "additionalProperties": false
-}`
+}
