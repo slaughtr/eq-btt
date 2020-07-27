@@ -1,3 +1,7 @@
+const dayjs = require('dayjs')
+const { default: ShortUniqueId } = require('short-unique-id');
+const uid = new ShortUniqueId();
+
 // Used this + https://www.jsonschema.net/home to make schema
 const baseJson = {
     "id": 1,
@@ -55,79 +59,65 @@ exports.battleSchema = {
     "required": [],
     "properties": {
         "id": {
-            "$id": "#/properties/id",
-            "type": "integer",
-            "title": "The id schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "type": "string",
+            "title": "id schema",
+            "description": "Short UUID to identify document",
+            "default": uid(),
+            "primary": true,
             "examples": [
-                1
+                'qjPKhh', 'b3DU52'
             ]
         },
         "start": {
-            "$id": "#/properties/start",
             "type": "integer",
-            "title": "The start schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "start schema",
+            "description": "Unix epoch seconds timestamp indicating when battle recording began",
+            "default": dayjs().valueOf(),
             "examples": [
                 1595808387
             ]
         },
         "end": {
-            "$id": "#/properties/end",
             "type": "integer",
-            "title": "The end schema",
-            "decription": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "end schema",
+            "description": "Unix epoch seconds timestamp indicating when battle recording began",
             "examples": [
                 1595808402
             ]
         },
         "length": {
-            "$id": "#/properties/length",
             "type": "integer",
-            "title": "The length schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "length schema",
+            "description": "Duration of battle in seconds",
             "examples": [
-                25
+                35
             ]
         },
         "player": {
-            "$id": "#/properties/player",
-            "ref": "character", // https://rxdb.info/population.html
             "type": "object",
-            "ref": "player",
-            "title": "The player schema",
-            "description": "An explanation about the purpose of this instance.",
+            "ref": "player"
         },
         "combats": {
-            "$id": "#/properties/combats",
             "type": "array",
-            "title": "The combats schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "combats schema",
+            "description": "Array of combat objects that ocurred during this battle",
             "ref": "combat",
-            "items": { "type": "object" }
+            "items": { 
+                "type": "object" 
+            }
         },
         "others": {
-            "$id": "#/properties/others",
             "type": "array",
             "ref": "entity",
-            "title": "The others schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "others schema",
+            "description": "Array of entities that were involved other than the player",
             "default": [],
-            "examples": [
-                [
-                    "an orc pawn",
-                    "Zonartik"
-                ]
-            ],
-            "additionalItems": false,
             "items": {
                 "type": "object"
             }
         }
     },
-    "additionalProperties": false
+    "indexes": [
+        "player", "others.[].id"
+    ]
 }

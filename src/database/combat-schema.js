@@ -58,6 +58,7 @@ exports.combatSchema = {
             "title": "id schema",
             "description": "Short UUID to identify document",
             "default": uid(),
+            "primary": true,
             "examples": [
                 'qjPKhh', 'b3DU52'
             ]
@@ -65,7 +66,7 @@ exports.combatSchema = {
         "start": {
             "type": "integer",
             "title": "start schema",
-            "description": "Unix epoch seconds timestamp indicating when battle recording began",
+            "description": "Unix epoch seconds timestamp indicating when recording began for this combat",
             "default": dayjs().valueOf(),
             "examples": [
                 1595808387
@@ -74,7 +75,7 @@ exports.combatSchema = {
         "end": {
             "type": "integer",
             "title": "end schema",
-            "description": "Unix epoch seconds timestamp indicating when battle recording began",
+            "description": "Unix epoch seconds timestamp indicating when recording began for this combat",
             "examples": [
                 1595808402
             ]
@@ -151,7 +152,7 @@ exports.combatSchema = {
         }
     },
     "indexes": [
-        "to.id",
-        "from.id"
+        "to",
+        "from"
     ]
 }
