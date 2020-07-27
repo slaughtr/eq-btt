@@ -22,11 +22,11 @@ const baseJson = {
     ]
 }
 
-exports.combatSchema = {
+exports.battleSchema = {
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
-    "title": "combat schema",
-    "description": "Describes the combat document",
+    "title": "battle schema",
+    "description": "Describes the battle document",
     "examples": [
         {
             "id": 1,

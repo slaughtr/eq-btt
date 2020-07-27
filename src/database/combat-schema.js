@@ -1,12 +1,14 @@
+const dayjs = require('dayjs')
+
 const baseJSON = {
     "start": 1595808387,
     "end": 1595808402,
     "length": 35,
-    "by": {
+    "attacker": {
         "type": "object",
         "ref": "entity"
     },
-    "to": {
+    "target": {
         "type": "object",
         "ref": "entity"
     },
@@ -18,23 +20,21 @@ const baseJSON = {
     "totalDPS": 0.96
 }
 
-exports.battleSchema = {
+exports.combatSchema = {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://example.com/example.json",
     "type": "object",
-    "title": "The root schema",
-    "description": "The root schema comprises the entire JSON document.",
-    "default": {},
+    "title": "combat schema",
+    "description": "Describes the combat document",
     "examples": [
         {
             "start": 1595808387,
             "end": 1595808402,
             "length": 35,
-            "by": {
+            "attacker": {
                 "type": "object",
                 "ref": "entity"
             },
-            "to": {
+            "target": {
                 "type": "object",
                 "ref": "entity"
             },
@@ -46,117 +46,98 @@ exports.battleSchema = {
             "totalDPS": 0.96
         }
     ],
-    "required": [],
+    "required": ["attacker", "target", "meleeDamage", "spellDamage", "totalDamage"],
     "properties": {
         "start": {
-            "$id": "#/properties/start",
             "type": "integer",
-            "title": "The start schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "start schema",
+            "description": "Unix epoch seconds timestamp indicating when battle recording began",
+            "default": dayjs().valueOf(),
             "examples": [
                 1595808387
             ]
         },
         "end": {
-            "$id": "#/properties/end",
             "type": "integer",
-            "title": "The end schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "end schema",
+            "description": "Unix epoch seconds timestamp indicating when battle recording began",
             "examples": [
                 1595808402
             ]
         },
         "length": {
-            "$id": "#/properties/length",
             "type": "integer",
-            "title": "The length schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "length schema",
+            "description": "Duration of combat in seconds",
             "examples": [
                 35
             ]
         },
-        "by": {
-            "$id": "#/properties/by",
+        "attacker": {
             "type": "object",
-            "ref": "entity",
-            "title": "The by schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "additionalProperties": false
+            "ref": "entity"
         },
-        "to": {
-            "$id": "#/properties/to",
+        "target": {
             "type": "object",
-            "ref": "entity",
-            "title": "The to schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": {},
-            "required": [],
-            "additionalProperties": false
+            "ref": "entity"
         },
         "meleeDamage": {
-            "$id": "#/properties/meleeDamage",
             "type": "integer",
-            "title": "The meleeDamage schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "meleeDamage schema",
+            "description": "Total melee damage recorded by attacker against target",
             "default": 0,
             "examples": [
                 24
             ]
         },
         "spellDamage": {
-            "$id": "#/properties/spellDamage",
             "type": "integer",
-            "title": "The spellDamage schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "spellDamage schema",
+            "description": "Total spell and damage shield damage recorded by attacker against target",
             "default": 0,
             "examples": [
                 0
             ]
         },
         "totalDamage": {
-            "$id": "#/properties/totalDamage",
             "type": "integer",
-            "title": "The totalDamage schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "totalDamage schema",
+            "description": "Total damage from all sources recorded by attacker against target. spellDamage + meleeDamage",
             "default": 0,
             "examples": [
                 24
             ]
         },
         "meleeDPS": {
-            "$id": "#/properties/meleeDPS",
             "type": "number",
-            "title": "The meleeDPS schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "meleeDPS schema",
+            "description": "Total DPS recorded for combat. meleeDamage / length",
             "default": 0.0,
             "examples": [
                 0.96
             ]
         },
         "spellDPS": {
-            "$id": "#/properties/spellDPS",
             "type": "number",
-            "title": "The spellDPS schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "spellDPS schema",
+            "description": "Total DPS recorded for combat. spellDamage / length",
             "default": 0.0,
             "examples": [
                 0.0
             ]
         },
         "totalDPS": {
-            "$id": "#/properties/totalDPS",
             "type": "number",
-            "title": "The totalDPS schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "totalDPS schema",
+            "description": "Total DPS recorded for combat. totalDamage / length",
             "default": 0.0,
             "examples": [
                 0.96
             ]
         }
     },
-    "additionalProperties": false
+    "indexes": [
+        "to.id",
+        "from.id"
+    ]
 }

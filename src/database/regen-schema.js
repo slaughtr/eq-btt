@@ -14,7 +14,7 @@ exports.regenSchema = {
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "title": "regen schema",
-    "description": "Describes the regen collection",
+    "description": "Describes the regen document",
     "examples": [
         {
             "iksarOrTroll": false,
@@ -94,5 +94,7 @@ exports.regenSchema = {
             ]
         }
     },
-    "additionalProperties": false
+    "indexes": [
+        "beginLevel", "endLevel"
+    ]
 }
