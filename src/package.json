@@ -15,6 +15,7 @@
     "pouchdb-adapter-node-websql": "^7.0.0",
     "rxdb": "^9.4.0",
     "rxjs": "^6.6.0",
+    "short-unique-id": "^3.0.4",
     "tail": "^2.0.4"
   },
   "devDependencies": {

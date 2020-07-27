@@ -1,6 +1,11 @@
 const dayjs = require('dayjs')
+const { default: ShortUniqueId } = require('short-unique-id');
+const uid = new ShortUniqueId();
 
+
+// Used this + https://www.jsonschema.net/home to make schema
 const baseJSON = {
+    "id": "qjPKhh",
     "start": 1595808387,
     "end": 1595808402,
     "length": 35,
@@ -48,6 +53,15 @@ exports.combatSchema = {
     ],
     "required": ["attacker", "target", "meleeDamage", "spellDamage", "totalDamage"],
     "properties": {
+        "id": {
+            "type": "string",
+            "title": "id schema",
+            "description": "Short UUID to identify document",
+            "default": uid(),
+            "examples": [
+                'qjPKhh', 'b3DU52'
+            ]
+        },
         "start": {
             "type": "integer",
             "title": "start schema",
