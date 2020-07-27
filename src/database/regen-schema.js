@@ -1,3 +1,4 @@
+// Used this + https://www.jsonschema.net/home to make schema
 const baseJSON = {
     "iksarOrTroll": false,
     "beginLevel": 1,
@@ -11,11 +12,9 @@ const baseJSON = {
 
 exports.regenSchema = {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://example.com/example.json",
     "type": "object",
-    "title": "The root schema",
-    "description": "The root schema comprises the entire JSON document.",
-    "default": {},
+    "title": "regen schema",
+    "description": "Describes the regen collection",
     "examples": [
         {
             "iksarOrTroll": false,
@@ -28,84 +27,68 @@ exports.regenSchema = {
             "hungry": 0
         }
     ],
-    "required": [],
+    "required": ["iksarOrTroll", "beginLevel", "endLevel", "sitting", "rested", "feigned", "standing", "hungry"],
     "properties": {
         "iksarOrTroll": {
-            "$id": "#/properties/iksarOrTroll",
             "type": "boolean",
-            "title": "The iksarOrTroll schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": false,
+            "title": "iksarOrTroll schema",
+            "description": "Boolean indicating whether the regen object is for Iksars and/or Trolls",
             "examples": [
-                false
+                false, true
             ]
         },
         "beginLevel": {
-            "$id": "#/properties/beginLevel",
             "type": "integer",
-            "title": "The beginLevel schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "beginLevel schema",
+            "description": "The level regen begins to be these values",
             "examples": [
-                1
+                1, 20, 50, 51, 56, 60, 61, 63, 65
             ]
         },
         "endLevel": {
-            "$id": "#/properties/endLevel",
             "type": "integer",
-            "title": "The endLevel schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "endLevel schema",
+            "description": "The level regen ends being these values",
             "examples": [
-                19
+                19, 49, 50, 55, 59, 60, 62, 64, 65
             ]
         },
         "sitting": {
-            "$id": "#/properties/sitting",
             "type": "integer",
-            "title": "The sitting schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "sitting schema",
+            "description": "Amount of regen while sitting",
             "examples": [
                 2
             ]
         },
         "rested": {
-            "$id": "#/properties/rested",
             "type": "integer",
             "title": "The rested schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "description": "Amount of regen while rested",
             "examples": [
                 2
             ]
         },
         "feigned": {
-            "$id": "#/properties/feigned",
             "type": "integer",
-            "title": "The feigned schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "feigned schema",
+            "description": "Amount of regen while feigned",
             "examples": [
                 1
             ]
         },
         "standing": {
-            "$id": "#/properties/standing",
             "type": "integer",
-            "title": "The standing schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "standing schema",
+            "description": "Amount of regen while standing",
             "examples": [
                 1
             ]
         },
         "hungry": {
-            "$id": "#/properties/hungry",
             "type": "integer",
-            "title": "The hungry schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
+            "title": "hungry schema",
+            "description": "Amount of regen while hungry",
             "examples": [
                 0
             ]
