@@ -1,28 +1,24 @@
-const baseJson = {
-    "id": 1,
+const baseJSON = {
     "start": 1595808387,
     "end": 1595808402,
-    "length": 25,
-    "player": {
+    "length": 35,
+    "by": {
         "type": "object",
-        "ref": "player"
+        "ref": "entity"
     },
-    "combats": [
-        {
-            "type": "object",
-            "ref": "combat"
-        }
-    ],
-    "playerOverallDPS": 2.00,
-    "others": [
-        {
-            "type": "object",
-            "ref": "entity"
-        }
-    ]
+    "to": {
+        "type": "object",
+        "ref": "entity"
+    },
+    "meleeDamage": 24,
+    "spellDamage": 0,
+    "totalDamage": 24,
+    "meleeDPS": 0.96,
+    "spellDPS": 0.00,
+    "totalDPS": 0.96
 }
 
-exports.combatSchema = {
+exports.battleSchema = {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "http://example.com/example.json",
     "type": "object",
@@ -31,71 +27,27 @@ exports.combatSchema = {
     "default": {},
     "examples": [
         {
-            "id": 1,
             "start": 1595808387,
             "end": 1595808402,
-            "length": 25,
-            "player": "Dreadsnot",
-            "combats": [
-                {
-                    "start": 1595808387,
-                    "end": 1595808402,
-                    "length": 35,
-                    "by": "an orc pawn",
-                    "to": "Dreadsnot",
-                    "meleeDamage": 24,
-                    "spellDamage": 0,
-                    "totalDamage": 24,
-                    "meleeDPS": 0.96,
-                    "spellDPS": 0.0,
-                    "totalDPS": 0.96
-                },
-                {
-                    "start": 1595808387,
-                    "end": 1595808402,
-                    "length": 35,
-                    "by": "an orc pawn",
-                    "to": "Dreadsnot",
-                    "meleeDamage": 39,
-                    "spellDamage": 11,
-                    "totalDamage": 50,
-                    "meleeDPS": 1.56,
-                    "spellDPS": 0.44,
-                    "totalDPS": 2.0
-                },
-                {
-                    "start": 1595808387,
-                    "end": 1595808402,
-                    "length": 35,
-                    "by": "an orc pawn",
-                    "to": "Dreadsnot",
-                    "meleeDamage": 24,
-                    "spellDamage": 0,
-                    "totalDamage": 24,
-                    "meleeDPS": 0.96,
-                    "spellDPS": 0.0,
-                    "totalDPS": 0.96
-                }
-            ],
-            "playerOverallDPS": 2.0,
-            "others": [
-                "an orc pawn",
-                "Zonartik"
-            ]
+            "length": 35,
+            "by": {
+                "type": "object",
+                "ref": "entity"
+            },
+            "to": {
+                "type": "object",
+                "ref": "entity"
+            },
+            "meleeDamage": 24,
+            "spellDamage": 0,
+            "totalDamage": 24,
+            "meleeDPS": 0.96,
+            "spellDPS": 0.0,
+            "totalDPS": 0.96
         }
     ],
     "required": [],
     "properties": {
-        "id": {
-            "$id": "#/properties/id",
-            "type": "integer",
-            "title": "The id schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
-            "examples": [
-                1
-            ]
-        },
         "start": {
             "$id": "#/properties/start",
             "type": "integer",
@@ -123,52 +75,87 @@ exports.combatSchema = {
             "description": "An explanation about the purpose of this instance.",
             "default": 0,
             "examples": [
-                25
+                35
             ]
         },
-        "player": {
-            "$id": "#/properties/player",
-            "ref": "character", // https://rxdb.info/population.html
+        "by": {
+            "$id": "#/properties/by",
             "type": "object",
-            "ref": "player",
-            "title": "The player schema",
+            "ref": "entity",
+            "title": "The by schema",
             "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "additionalProperties": false
         },
-        "combats": {
-            "$id": "#/properties/combats",
-            "type": "array",
-            "title": "The combats schema",
+        "to": {
+            "$id": "#/properties/to",
+            "type": "object",
+            "ref": "entity",
+            "title": "The to schema",
             "description": "An explanation about the purpose of this instance.",
-            "ref": "combat",
-            "items": { "type": "object" }
+            "default": {},
+            "required": [],
+            "additionalProperties": false
         },
-        "playerOverallDPS": {
-            "$id": "#/properties/playerOverallDPS",
+        "meleeDamage": {
+            "$id": "#/properties/meleeDamage",
+            "type": "integer",
+            "title": "The meleeDamage schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                24
+            ]
+        },
+        "spellDamage": {
+            "$id": "#/properties/spellDamage",
+            "type": "integer",
+            "title": "The spellDamage schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                0
+            ]
+        },
+        "totalDamage": {
+            "$id": "#/properties/totalDamage",
+            "type": "integer",
+            "title": "The totalDamage schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                24
+            ]
+        },
+        "meleeDPS": {
+            "$id": "#/properties/meleeDPS",
             "type": "number",
-            "title": "The playerOverallDPS schema",
+            "title": "The meleeDPS schema",
             "description": "An explanation about the purpose of this instance.",
             "default": 0.0,
             "examples": [
-                2.0
+                0.96
             ]
         },
-        "others": {
-            "$id": "#/properties/others",
-            "type": "array",
-            "ref": "entity",
-            "title": "The others schema",
+        "spellDPS": {
+            "$id": "#/properties/spellDPS",
+            "type": "number",
+            "title": "The spellDPS schema",
             "description": "An explanation about the purpose of this instance.",
-            "default": [],
+            "default": 0.0,
             "examples": [
-                [
-                    "an orc pawn",
-                    "Zonartik"
-                ]
-            ],
-            "additionalItems": false,
-            "items": {
-                "type": "object"
-            }
+                0.0
+            ]
+        },
+        "totalDPS": {
+            "$id": "#/properties/totalDPS",
+            "type": "number",
+            "title": "The totalDPS schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+                0.96
+            ]
         }
     },
     "additionalProperties": false
