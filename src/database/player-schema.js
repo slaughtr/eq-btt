@@ -418,7 +418,6 @@ exports.playerSchema = {
                             "cold": 25
                         }
                     ],
-                    "required": [],
                     "properties": {
                         "magic": {
                             "type": "integer",
