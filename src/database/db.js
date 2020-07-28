@@ -1,17 +1,10 @@
-const {
-    addRxPlugin,
-    createRxDatabase
-} = require('rxdb');
-const { regenSchema } = require('./regen-schema')
-const { combatSchema } = require('./combat-schema')
-const { battleSchema } = require('./battle-schema')
-const { entitySchema } = require('./entity-schema')
-const { playerSchema } = require('./player-schema')
+const { addRxPlugin, createRxDatabase } = require('rxdb');
+const { createCollections, insertDefaults } = require('./create-collections')
 // Going with websql over leveldb as I assume there will potentially be multiple instances running for boxes
 addRxPlugin(require('pouchdb-adapter-node-websql'));
 
 
-// or use a specific folder to store the data
+
 
 const run = async () => {
     try {
@@ -24,40 +17,18 @@ const run = async () => {
         });
         // console.dir(db);
 
+        // use a specific folder (file name?) to store the data
+        // TODO: better handlindg of DB file
         const database = await createRxDatabase({
-            name: process.env.RXDB_FILE_LOCATION || './eq',
-            adapter: 'websql' // the name of your adapter
+            name: process.env.RXDB_FILE_LOCATION || './eq/',
+            adapter: 'websql'
         });
+        
+        await createCollections(database)
 
-        await database.collection({
-            name: 'regen',
-            schema: regenSchema,
-            // pouchSettings: {} // (optional)
-            // statics: {}, // (optional) // ORM-functions for this collection
-            // methods: {}, // (optional) ORM-functions for documents
-            // attachments: {}, // (optional) ORM-functions for attachments
-            // options: {}, // (optional) Custom paramters that might be used in plugins
-            // migrationStrategies: {}, // (optional)
-            // autoMigrate: true, // (optional)
-            // cacheReplacementPolicy: function () { }, // (optional) custoom cache replacement policy
-        });
+        await insertDefaults(dabatase)
 
-        try {
-            await database.regen.insert({
-                iksarOrTroll: false,
-                beginLevel: 1,
-                endLevel: 19,
-                sitting: 2,
-                rested: 2,
-                feigned: 1,
-                standing: 1,
-                hungry: 0
-            });
-        } catch (error) {
-            console.error('insert error')
-        }
-
-        const level = 19
+        // const level = 19
         // const docs = await database.regen.findOne()
         // // const docs = await database.regen.findOne({
         // //         selector: {$and: [{beginLevel: {$lte: level}}, {endLevel: {$gte: level}}]}
