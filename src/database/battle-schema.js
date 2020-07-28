@@ -1,10 +1,7 @@
 const dayjs = require('dayjs')
-const { default: ShortUniqueId } = require('short-unique-id');
-const uid = new ShortUniqueId();
 
 // Used this + https://www.jsonschema.net/home to make schema
 const baseJson = {
-    "id": 'ag93fS',
     "start": 1595808387,
     "end": 1595808402,
     "length": 25,
@@ -27,96 +24,80 @@ const baseJson = {
 }
 
 exports.battleSchema = {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "type": "object",
-    "title": "battle schema",
-    "description": "Describes the battle document",
-    "examples": [
-        {
-            "id": 'ag93fS',
-            "start": 1595808387,
-            "end": 1595808402,
-            "length": 25,
-            "player": {
-                "type": "object",
-                "ref": "player"
-            },
-            "combats": [
-                {
-                    "type": "object",
-                    "ref": "combat"
-                }
-            ],
-            "others": [
-                {
-                    "type": "object",
-                    "ref": "entity"
-                }
-            ]
-        }
-    ],
-    "required": ["id", "start", "end", "others"],
-    "properties": {
-        "id": {
-            "type": "string",
-            "title": "id schema",
-            "description": "Short UUID to identify document",
-            "default": uid(),
-            "primary": true,
-            "examples": [
-                'qjPKhh', 'b3DU52'
-            ]
+    // "schema: "http://json-schema.org/draft-07/schema",
+    version: 0,
+    type: "object",
+    title: "battle schema",
+    description: "Describes the battle document",
+    // examples: [
+    //     {
+    //         start: 1595808387,
+    //         end: 1595808402,
+    //         length: 25,
+    //         player: {
+    //             type: "object",
+    //             ref: "player"
+    //         },
+    //         combats: [
+    //             {
+    //                 type: "object",
+    //                 ref: "combat"
+    //             }
+    //         ],
+    //         others: [
+    //             {
+    //                 type: "object",
+    //                 ref: "entity"
+    //             }
+    //         ]
+    //     }
+    // ],
+    required: [ "start", "end", "others"],
+    properties: {
+        start: {
+            type: "integer",
+            default: dayjs().valueOf(),
+            // title: "start schema",
+            // description: "Unix epoch seconds timestamp indicating when battle recording began",
+            // examples: [
+            //     1595808387
+            // ]
         },
-        "start": {
-            "type": "integer",
-            "title": "start schema",
-            "description": "Unix epoch seconds timestamp indicating when battle recording began",
-            "default": dayjs().valueOf(),
-            "examples": [
-                1595808387
-            ]
+        end: {
+            type: "integer",
+            // title: "end schema",
+            // description: "Unix epoch seconds timestamp indicating when battle recording began",
+            // examples: [
+            //     1595808402
+            // ]
         },
-        "end": {
-            "type": "integer",
-            "title": "end schema",
-            "description": "Unix epoch seconds timestamp indicating when battle recording began",
-            "examples": [
-                1595808402
-            ]
+        length: {
+            type: "integer",
+            // title: "length schema",
+            // description: "Duration of battle in seconds",
+            // examples: [
+            //     35
+            // ]
         },
-        "length": {
-            "type": "integer",
-            "title": "length schema",
-            "description": "Duration of battle in seconds",
-            "examples": [
-                35
-            ]
+        player: {
+            type: "object",
+            ref: "player"
         },
-        "player": {
-            "type": "object",
-            "ref": "player"
-        },
-        "combats": {
-            "type": "array",
-            "title": "combats schema",
-            "description": "Array of combat objects that ocurred during this battle",
-            "ref": "combat",
-            "items": {
-                "type": "object"
+        combats: {
+            type: "array",
+            ref: "combat",
+            items: {
+                type: "object"
             }
         },
-        "others": {
-            "type": "array",
-            "ref": "entity",
-            "title": "others schema",
-            "description": "Array of entities that were involved other than the player",
-            "default": [],
-            "items": {
-                "type": "object"
+        others: {
+            type: "array",
+            ref: "entity",
+            default: [],
+            items: {
+                type: "object"
             }
         }
     },
-    "indexes": [
-        "player", "others.[].id"
-    ]
+    indexes: [ "player.id", "others.[]._id", "combats.[]._id" ]
 }
