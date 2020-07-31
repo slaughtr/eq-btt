@@ -1,13 +1,13 @@
 // Used this + https://www.jsonschema.net/home to make schema
 const baseJSON = {
-    "name": "an orc pawn",
-    "battles": [{
-        "ref": "battle",
-        "type": "object"
-    }],
-    "player": {
-        "ref": "player",
-        "type": "object"
+    'name': 'an orc pawn',
+    'battles': [ {
+        'ref': 'battle',
+        'type': 'object'
+    } ],
+    'player': {
+        'ref': 'player',
+        'type': 'object'
     }
 }
 
@@ -18,18 +18,19 @@ exports.entitySchema = {
         addBattle(battle) {
             this.battles.push(battle)
         },
-        makePlayer(player, force) {
-            if (this.player && !force) console.error('Entity is already player!', entity, player)
-            else this.player = player
+        makePlayer(entity, force) {
+            if (this.player && !force) console.error('Entity is already player!', entity, this.player)
+            else this.player = entity
+
             return this._id
         }
     }, // (optional) ORM-functions for documents
     schema: {
         // schema: "http://json-schema.org/draft-07/schema",
         version: 0,
-        type: "object",
-        title: "entity",
-        description: "Describes the entity document",
+        type: 'object',
+        title: 'entity',
+        description: 'Describes the entity document',
         // examples: [
         //     {
         //         name: "an orc pawn",
@@ -47,7 +48,7 @@ exports.entitySchema = {
         // ],
         properties: {
             name: {
-                type: "string",
+                type: 'string',
                 primary: true
                 // title: "name schema",
                 // description: "The name of the entity as parsed from the logs",
@@ -59,14 +60,14 @@ exports.entitySchema = {
                 type: 'array',
                 ref: 'battle',
                 items: {
-                    type: 'object'
+                    type: 'string'
                 },
             },
             player: {
-                ref: "player",
-                type: "object"
+                ref: 'player',
+                type: 'string'
             },
-            indexes: ["battles.[]._id", "player.[]._id"]
+            indexes: ['battles.[]._id', 'player']
         }
     }
 }

@@ -1,53 +1,53 @@
 // Used this + https://www.jsonschema.net/home to make schema
 const baseJSON = {
-    "name": "Dreadsnot",
-    "level": 19,
-    "class": 5,
-    "race": 10,
-    "hp": {
-        "current": 778,
-        "max": 778
+    'name': 'Dreadsnot',
+    'level': 19,
+    'class': 5,
+    'race': 10,
+    'hp': {
+        'current': 778,
+        'max': 778
     },
-    "mana": {
-        "current": 778,
-        "max": 778
+    'mana': {
+        'current': 778,
+        'max': 778
     },
-    "regen": {
-        "iksarOrTroll": false,
-        "beginLevel": 1,
-        "endLevel": 19,
-        "sitting": 2,
-        "rested": 2,
-        "feigned": 1,
-        "standing": 1,
-        "hungry": 0
+    'regen': {
+        'iksarOrTroll': false,
+        'beginLevel': 1,
+        'endLevel': 19,
+        'sitting': 2,
+        'rested': 2,
+        'feigned': 1,
+        'standing': 1,
+        'hungry': 0
     },
-    "pet": {
-        "name": "Soandso"
+    'pet': {
+        'name': 'Soandso'
     },
-    "zone": "unrest",
-    "loc": {
-        "x": 1,
-        "y": 1,
-        "z": 1
+    'zone': 'unrest',
+    'loc': {
+        'x': 1,
+        'y': 1,
+        'z': 1
     },
-    "heading": "NorthWest",
-    "stats": {
-        "STR": 123,
-        "STA": 123,
-        "AGI": 123,
-        "DEX": 123,
-        "INT": 123,
-        "WIS": 123,
-        "CHA": 123,
-        "AC": 123,
-        "ATK": 123,
-        "RES": {
-            "magic": 25,
-            "poison": 25,
-            "disease": 25,
-            "fire": 25,
-            "cold": 25
+    'heading': 'NorthWest',
+    'stats': {
+        'STR': 123,
+        'STA': 123,
+        'AGI': 123,
+        'DEX': 123,
+        'INT': 123,
+        'WIS': 123,
+        'CHA': 123,
+        'AC': 123,
+        'ATK': 123,
+        'RES': {
+            'magic': 25,
+            'poison': 25,
+            'disease': 25,
+            'fire': 25,
+            'cold': 25
         }
 
     }
@@ -58,30 +58,30 @@ exports.playerSchema = {
     collectionName: 'player',
     statics: {}, // (optional) // ORM-functions for this collection
     methods: {
-        increaseHP (amount = 1) {
-            this.atomicSet('hp', this.hp + amount)
+        increaseHP(amount = 1) {
+            this.atomicSet('hp', this.hp.current + amount)
             // return this
         },
-        decreaseHP (amount = 1) {
-            this.atomicSet('hp', this.hp - amount)
+        decreaseHP(amount = 1) {
+            this.atomicSet('hp', this.hp.current - amount)
         },
-        increaseMana (amount = 1) {
-            this.atomicSet('mana', this.mana + amount)
+        increaseMana(amount = 1) {
+            this.atomicSet('mana', this.mana.current + amount)
             // return this
         },
-        decreaseMana (amount = 1) {
-            this.atomicSet('mana', this.mana - amount)
+        decreaseMana(amount = 1) {
+            this.atomicSet('mana', this.mana.current - amount)
         },
-        setStat (stat, value) {
+        setStat(stat, value) {
             if (!stat || !value) return 'Bad input'
             this.atomicSet(`stat.${stat.toUpperCase()}`, value)
         },
-        setStats (stats) {
+        setStats(stats) {
             if (!stats) return 'Bad input'
             this.atomicSet('stats', { ...stats, ...this.stats })
         },
-        setResistance (RES, value) {
-            if (!RES || ! value) return 'Bad input'
+        setResistance(RES, value) {
+            if (!RES || !value) return 'Bad input'
             const map = {
                 mr: 'magic',
                 fr: 'fire',
@@ -92,19 +92,19 @@ exports.playerSchema = {
 
             this.atomicSet(`stats.RES.${map[RES.toLowerCase()]}`, value)
         },
-        setResistances (RESs) {
+        setResistances(RESs) {
             if (!RESs) return 'Bad input'
 
             this.atomicSet('stats.RES', { ...RESs, ...this.stats.RES })
         },
-        getHPPercent () {
+        getHPPercent() {
             if (this.hp.current || this.hp.max) {
                 const percent = this.hp.current || 0 / this.hp.max || 1
                 const display = parseInt(percent * 100)
                 return display
             }
         },
-        getManaPercent () {
+        getManaPercent() {
             if (this.mana.current || this.mana.max) {
                 const percent = this.mana.current || 0 / this.mana.max || 1
                 const display = parseInt(percent * 100)
@@ -116,9 +116,9 @@ exports.playerSchema = {
     schema: {
         // $schema: "http://json-schema.org/draft-07/schema",
         version: 0,
-        type: "object",
-        title: "player",
-        description: "Describes the player document",
+        type: 'object',
+        title: 'player',
+        description: 'Describes the player document',
         // examples: [
         //     {
         //         name: "Dreadsnot",
@@ -175,7 +175,7 @@ exports.playerSchema = {
         // ],
         properties: {
             name: {
-                type: "string",
+                type: 'string',
                 primary: true,
                 // title: "name schema",
                 // description: "Name of the player character",
@@ -184,7 +184,7 @@ exports.playerSchema = {
                 // ]
             },
             level: {
-                type: "integer",
+                type: 'integer',
                 default: 1,
                 // title: "level schema",
                 // description: "The player's level",
@@ -193,7 +193,7 @@ exports.playerSchema = {
                 // ]
             },
             class: {
-                type: "integer",
+                type: 'integer',
                 default: 1,
                 // title: "class schema",
                 // description: "Numerical identifier indicating player's class. Uses standard EQ class numbers",
@@ -202,7 +202,7 @@ exports.playerSchema = {
                 // ]
             },
             race: {
-                type: "integer",
+                type: 'integer',
                 default: 1,
                 // title: "race schema",
                 // description: "Numerical identifier indicating player's race. Uses standard EQ race numbers",
@@ -211,9 +211,8 @@ exports.playerSchema = {
                 // ]
             },
             hp: {
-                type: "object",
-                default: {},
-                required: ["max"],
+                type: 'object',
+                required: [ 'max' ],
                 // title: "hp schema",
                 // description: "Object describing player's current and max HP",
                 // examples: [
@@ -224,8 +223,7 @@ exports.playerSchema = {
                 // ],
                 properties: {
                     current: {
-                        type: "integer",
-                        default: 1,
+                        type: 'integer',
                         // title: "current HP schema",
                         // description: "Player's current HP",
                         // examples: [
@@ -233,8 +231,7 @@ exports.playerSchema = {
                         // ]
                     },
                     max: {
-                        type: "integer",
-                        default: 1,
+                        type: 'integer',
                         // title: "max HP schema",
                         // description: "Player's maximum HP",
                         // examples: [
@@ -244,8 +241,8 @@ exports.playerSchema = {
                 }
             },
             mana: {
-                type: "object",
-                required: ["max"],
+                type: 'object',
+                required: [ 'max' ],
                 // title: "mana schema",
                 // description: "Object describing player's current and max mana",
                 // examples: [
@@ -256,7 +253,7 @@ exports.playerSchema = {
                 // ],
                 properties: {
                     current: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "current mana schema",
                         // description: "Player's current mana",
                         // examples: [
@@ -264,7 +261,7 @@ exports.playerSchema = {
                         // ]
                     },
                     max: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "max mana schema",
                         // description: "Player's maximum mana",
                         // examples: [
@@ -274,22 +271,22 @@ exports.playerSchema = {
                 }
             },
             regen: {
-                type: "object",
-                ref: "regen"
+                type: 'string',
+                ref: 'regen'
             },
             pet: {
-                type: "object",
-                title: "pet schema",
+                type: 'object',
+                title: 'pet schema',
                 // description: "Object describing player's pet",
                 // examples: [
                 //     {
                 //         name: "Soandso"
                 //     }
                 // ],
-                required: ["name"],
+                required: [ 'name' ],
                 properties: {
                     name: {
-                        type: "string",
+                        type: 'string',
                         // title: "pet name schema",
                         // description: "The name of the player's pet",
                         // examples: [
@@ -300,7 +297,7 @@ exports.playerSchema = {
             },
             // TODO: maybe make a zone schema for pulling in ZEMs?
             zone: {
-                type: "string",
+                type: 'string',
                 // title: "zone schema",
                 // description: "Player's last reported. Uses EQ zone short names",
                 // examples: [
@@ -308,9 +305,8 @@ exports.playerSchema = {
                 // ]
             },
             loc: {
-                type: "object",
-                default: {},
-                required: ["x", "y"],
+                type: 'object',
+                required: ['x', 'y'],
                 // title: "loc schema",
                 // description: "Player's last reported xyz location",
                 // examples: [
@@ -322,22 +318,19 @@ exports.playerSchema = {
                 // ],
                 properties: {
                     x: {
-                        type: "integer",
-                        default: 0,
+                        type: 'integer',
                         // examples: [
                         //     1
                         // ]
                     },
                     y: {
-                        type: "integer",
-                        default: 0,
+                        type: 'integer',
                         // examples: [
                         //     1
                         // ]
                     },
                     z: {
-                        type: "integer",
-                        default: 0,
+                        type: 'integer',
                         // examples: [
                         //     1
                         // ]
@@ -345,7 +338,7 @@ exports.playerSchema = {
                 }
             },
             heading: {
-                type: "string",
+                type: 'string',
                 // title: "heading schema",
                 // description: "Player's last reported heading as told by Sense Heading",
                 // examples: [
@@ -353,8 +346,7 @@ exports.playerSchema = {
                 // ]
             },
             stats: {
-                type: "object",
-                default: {},
+                type: 'object',
                 // title: "stats schema",
                 // description: "The player's stats",
                 // examples: [
@@ -379,7 +371,7 @@ exports.playerSchema = {
                 // ],
                 properties: {
                     STR: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The STR schema",
                         // description: "The player's STR stat",
                         // examples: [
@@ -387,7 +379,7 @@ exports.playerSchema = {
                         // ]
                     },
                     STA: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The STA schema",
                         // description: "The player's STA stat",
                         // examples: [
@@ -395,7 +387,7 @@ exports.playerSchema = {
                         // ]
                     },
                     AGI: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The AGI schema",
                         // description: "The player's AGI stat",
                         // examples: [
@@ -403,7 +395,7 @@ exports.playerSchema = {
                         // ]
                     },
                     DEX: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The DEX schema",
                         // description: "The player's DEX stat",
                         // examples: [
@@ -411,7 +403,7 @@ exports.playerSchema = {
                         // ]
                     },
                     INT: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The INT schema",
                         // description: "The player's INT stat",
                         // examples: [
@@ -419,7 +411,7 @@ exports.playerSchema = {
                         // ]
                     },
                     WIS: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The WIS schema",
                         // description: "The player's WIS stat",
                         // examples: [
@@ -427,15 +419,15 @@ exports.playerSchema = {
                         // ]
                     },
                     CHA: {
-                        type: "integer",
-                        title: "The CHA schema",
+                        type: 'integer',
+                        // title: 'The CHA schema',
                         // description: "The player's CHA stat",
                         // examples: [
                         //     123
                         // ]
                     },
                     AC: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The AC schema",
                         // description: "The player's AC stat",
                         // examples: [
@@ -443,7 +435,7 @@ exports.playerSchema = {
                         // ]
                     },
                     ATK: {
-                        type: "integer",
+                        type: 'integer',
                         // title: "The ATK schema",
                         // description: "The player's ATK stat",
                         // examples: [
@@ -451,7 +443,7 @@ exports.playerSchema = {
                         // ]
                     },
                     RES: {
-                        type: "object",
+                        type: 'object',
                         // title: "The RES schema",
                         // description: "The player's resistane stats",
                         // examples: [
@@ -465,7 +457,7 @@ exports.playerSchema = {
                         // ],
                         properties: {
                             magic: {
-                                type: "integer",
+                                type: 'integer',
                                 // title: "magic schema",
                                 // description: "The player's magic resistance stat",
                                 // examples: [
@@ -473,7 +465,7 @@ exports.playerSchema = {
                                 // ]
                             },
                             poison: {
-                                type: "integer",
+                                type: 'integer',
                                 // title: "poison schema",
                                 // description: "The player's poison resistance stat",
                                 // examples: [
@@ -481,7 +473,7 @@ exports.playerSchema = {
                                 // ]
                             },
                             disease: {
-                                type: "integer",
+                                type: 'integer',
                                 // title: "disease schema",
                                 // description: "The player's disease resistance stat",
                                 // examples: [
@@ -489,7 +481,7 @@ exports.playerSchema = {
                                 // ]
                             },
                             fire: {
-                                type: "integer",
+                                type: 'integer',
                                 // title: "fire schema",
                                 // description: "The player's fire resistance stat",
                                 // examples: [
@@ -497,7 +489,7 @@ exports.playerSchema = {
                                 // ]
                             },
                             cold: {
-                                type: "integer",
+                                type: 'integer',
                                 // title: "cold schema",
                                 // description: "The player's cold resistance stat",
                                 // examples: [

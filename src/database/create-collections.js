@@ -5,17 +5,22 @@
 // const { playerSchema } = require('./schemas/player-schema')
 
 // Maybe later improve this
+const { regenSchema } = require('./schemas/regen-schema')
+const { combatSchema } = require('./schemas/combat-schema')
+const { battleSchema } = require('./schemas/battle-schema')
+const { entitySchema } = require('./schemas/entity-schema')
+const { playerSchema } = require('./schemas/player-schema')
 const schemas = [
-    { regenSchema } = require('./regen-schema'),
-    { combatSchema } = require('./schemas/combat-schema'), 
-    { battleSchema } = require('./schemas/battle-schema'), 
-    { entitySchema } = require('./schemas/entity-schema'),
-    { playerSchema } = require('./schemas/player-schema')
-
+    regenSchema,
+    combatSchema,
+    battleSchema,
+    entitySchema,
+    playerSchema,
 ]
 
-const { insertRegenDefaults } = require('./regen-defaults')
-const { insertEntityDefaults } = require('./entity-defaults')
+const { regenDefaults } = require('./defaults/regen-defaults')
+// const { insertEntityDefaults } = require('./defaults/entity-defaults')
+
 // await database.collection({
 //     name: 'collection_name',
 //     schema: collectionSchema,
@@ -31,8 +36,13 @@ const { insertEntityDefaults } = require('./entity-defaults')
 
 exports.createCollections = async database => {
     for (const schema of schemas) {
+        // console.log({
+        //     name: schema.schema.title,
+        //     schema: schema.schema,
+        //     statics: schema.statics,
+        // methods: schema.methods})
         await database.collection({
-            name: schema.title,
+            name: schema.schema.title,
             schema: schema.schema,
             statics: schema.statics, // (optional) // ORM-functions for this collection
             methods: schema.methods, // (optional) ORM-functions for documents
@@ -43,10 +53,12 @@ exports.createCollections = async database => {
             // autoMigrate: true, // (optional)
         })
     }
+
+    return null
 }
 
 exports.insertDefaults = async database => {
-    await insertRegenDefaults(database)
-    await insertEntityDefaults(database)
+    for (const doc of regenDefaults) await database.regen.insert(doc)
+    // await insertEntityDefaults(database)
 }
 

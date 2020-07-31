@@ -1,3 +1,0 @@
-exports.regenDefaults = dabase => {
-    
-}

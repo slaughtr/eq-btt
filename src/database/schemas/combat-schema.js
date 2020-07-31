@@ -2,23 +2,23 @@ const dayjs = require('dayjs')
 
 // Used this + https://www.jsonschema.net/home to make schema
 const baseJSON = {
-    "start": 1595808387,
-    "end": 1595808402,
-    "length": 35,
-    "attacker": {
-        "type": "object",
-        "ref": "entity"
+    'start': 1595808387,
+    'end': 1595808402,
+    'length': 35,
+    'attacker': {
+        'type': 'object',
+        'ref': 'entity'
     },
-    "target": {
-        "type": "object",
-        "ref": "entity"
+    'target': {
+        'type': 'object',
+        'ref': 'entity'
     },
-    "meleeDamage": 24,
-    "spellDamage": 0,
-    "totalDamage": 24,
-    "meleeDPS": 0.96,
-    "spellDPS": 0.00,
-    "totalDPS": 0.96
+    'meleeDamage': 24,
+    'spellDamage': 0,
+    'totalDamage': 24,
+    'meleeDPS': 0.96,
+    'spellDPS': 0.00,
+    'totalDPS': 0.96
 }
 
 exports.combatSchema = {
@@ -34,9 +34,9 @@ exports.combatSchema = {
     schema: {
         // "$schema": "http://json-schema.org/draft-07/schema",
         version: 0,
-        type: "object",
-        title: "combat",
-        description: "Describes the combat document",
+        type: 'object',
+        title: 'combat',
+        description: 'Describes the combat document',
         // examples: [
         //     {
         //         start: 1595808387,
@@ -58,10 +58,10 @@ exports.combatSchema = {
         //         totalDPS: 0.96
         //     }
         // ],
-        required: ["attacker", "target", "meleeDamage", "spellDamage", "totalDamage"],
+        required: ['attacker', 'target', 'meleeDamage', 'spellDamage', 'totalDamage'],
         properties: {
             start: {
-                type: "integer",
+                type: 'integer',
                 default: dayjs().valueOf(),
                 // title: "start schema",
                 // description: "Unix epoch seconds timestamp indicating when recording began for this combat",
@@ -70,7 +70,7 @@ exports.combatSchema = {
                 // ]
             },
             end: {
-                type: "integer",
+                type: 'integer',
                 // title: "end schema",
                 // description: "Unix epoch seconds timestamp indicating when recording began for this combat",
                 // examples: [
@@ -78,7 +78,7 @@ exports.combatSchema = {
                 // ]
             },
             length: {
-                type: "integer",
+                type: 'integer',
                 // title: "length schema",
                 // description: "Duration of combat in seconds",
                 // examples: [
@@ -86,15 +86,15 @@ exports.combatSchema = {
                 // ]
             },
             attacker: {
-                type: "object",
-                ref: "entity"
+                type: 'string',
+                ref: 'entity'
             },
             target: {
-                type: "object",
-                ref: "entity"
+                type: 'string',
+                ref: 'entity'
             },
             meleeDamage: {
-                type: "integer",
+                type: 'integer',
                 default: 0,
                 // title: "meleeDamage schema",
                 // description: "Total melee damage recorded by attacker against target",
@@ -103,7 +103,7 @@ exports.combatSchema = {
                 // ]
             },
             spellDamage: {
-                type: "integer",
+                type: 'integer',
                 default: 0,
                 // title: "spellDamage schema",
                 // description: "Total spell and damage shield damage recorded by attacker against target",
@@ -112,7 +112,7 @@ exports.combatSchema = {
                 // ]
             },
             totalDamage: {
-                type: "integer",
+                type: 'integer',
                 default: 0,
                 // title: "totalDamage schema",
                 // description: "Total damage from all sources recorded by attacker against target. spellDamage + meleeDamage",
@@ -121,7 +121,7 @@ exports.combatSchema = {
                 // ]
             },
             meleeDPS: {
-                type: "number",
+                type: 'number',
                 default: 0.0,
                 // title: "meleeDPS schema",
                 // description: "Total DPS recorded for combat. meleeDamage / length",
@@ -130,7 +130,7 @@ exports.combatSchema = {
                 // ]
             },
             spellDPS: {
-                type: "number",
+                type: 'number',
                 default: 0.0,
                 // title: "spellDPS schema",
                 // description: "Total DPS recorded for combat. spellDamage / length",
@@ -139,7 +139,7 @@ exports.combatSchema = {
                 // ]
             },
             totalDPS: {
-                type: "number",
+                type: 'number',
                 default: 0.0,
                 // title: "totalDPS schema",
                 // description: "Total DPS recorded for combat. totalDamage / length",
@@ -149,8 +149,8 @@ exports.combatSchema = {
             }
         },
         indexes: [
-            "to",
-            "from"
+            'target',
+            'attacker'
         ]
     }
 }

@@ -13,9 +13,9 @@ const baseJSON = {
 exports.regenSchema = {
     collectionName: 'regen',
     statics: {
-        getRegen (iksarOrTroll, level) {
+        getRegen(iksarOrTroll, level) {
             return this.findOne({
-                iksarOrTroll,
+                iksarOrTroll: iksarOrTroll,
                 $and: [
                     { beginLevel: { $gte: level } },
                     { $endlevel: { $lte: level } }
@@ -27,9 +27,9 @@ exports.regenSchema = {
     schema: {
         // "schema: "http://json-schema.org/draft-07/schema",
         version: 0,
-        type: "object",
-        title: "regen",
-        description: "Describes the regen document",
+        type: 'object',
+        title: 'regen',
+        description: 'Describes the regen document',
         // examples: [
         //     {
         //         iksarOrTroll: false,
@@ -42,10 +42,10 @@ exports.regenSchema = {
         //         hungry: 0
         //     }
         // ],
-        required: ["iksarOrTroll", "beginLevel", "endLevel", "sitting", "rested", "feigned", "standing", "hungry"],
+        required: ['iksarOrTroll', 'beginLevel', 'endLevel', 'sitting', 'rested', 'feigned', 'standing', 'hungry'],
         properties: {
             iksarOrTroll: {
-                type: "boolean",
+                type: 'boolean',
                 // title: "iksarOrTroll schema",
                 // description: "Boolean indicating whether the regen object is for Iksars and/or Trolls",
                 // examples: [
@@ -53,7 +53,7 @@ exports.regenSchema = {
                 // ]
             },
             beginLevel: {
-                type: "integer",
+                type: 'integer',
                 // title: "beginLevel schema",
                 // description: "The level regen begins to be these values",
                 // examples: [
@@ -61,7 +61,7 @@ exports.regenSchema = {
                 // ]
             },
             endLevel: {
-                type: "integer",
+                type: 'integer',
                 // title: "endLevel schema",
                 // description: "The level regen ends being these values",
                 // examples: [
@@ -69,7 +69,7 @@ exports.regenSchema = {
                 // ]
             },
             sitting: {
-                type: "integer",
+                type: 'integer',
                 // title: "sitting schema",
                 // description: "Amount of regen while sitting",
                 // examples: [
@@ -77,7 +77,7 @@ exports.regenSchema = {
                 // ]
             },
             rested: {
-                type: "integer",
+                type: 'integer',
                 // title: "The rested schema",
                 // description: "Amount of regen while rested",
                 // examples: [
@@ -85,7 +85,7 @@ exports.regenSchema = {
                 // ]
             },
             feigned: {
-                type: "integer",
+                type: 'integer',
                 // title: "feigned schema",
                 // description: "Amount of regen while feigned",
                 // examples: [
@@ -93,7 +93,7 @@ exports.regenSchema = {
                 // ]
             },
             standing: {
-                type: "integer",
+                type: 'integer',
                 // title: "standing schema",
                 // description: "Amount of regen while standing",
                 // examples: [
@@ -101,7 +101,7 @@ exports.regenSchema = {
                 // ]
             },
             hungry: {
-                type: "integer",
+                type: 'integer',
                 // title: "hungry schema",
                 // description: "Amount of regen while hungry",
                 // examples: [
@@ -110,8 +110,7 @@ exports.regenSchema = {
             }
         },
         indexes: [
-            "beginLevel", "endLevel"
-        ],
-        required: ["iksarOrTroll", "beginLevel", "endLevel", "sitting", "rested", "feigned", "standing", "hungry"],
+            'beginLevel', 'endLevel'
+        ]
     }
 }
