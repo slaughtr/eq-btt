@@ -11,15 +11,14 @@
   "license": "ISC",
   "dependencies": {
     "color-name-list": "^6.4.0",
+    "dayjs": "^1.8.30",
     "node-fetch": "^2.6.0",
     "pouchdb-adapter-node-websql": "^7.0.0",
     "rxdb": "^9.4.0",
     "rxjs": "^6.6.0",
-    "short-unique-id": "^3.0.4",
     "tail": "^2.0.4"
   },
   "devDependencies": {
-    "dayjs": "^1.8.30",
     "line-by-line": "^0.1.6"
   }
 }

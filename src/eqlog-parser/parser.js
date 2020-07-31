@@ -123,6 +123,7 @@ const processLine = line => {
                 break
             }
             case 'pet': {
+                // https://www.takproject.net/allaclone/pets.php?class=11
                 current.PET_NAME = split[1]
                 break
             }
