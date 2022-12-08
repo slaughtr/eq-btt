@@ -14,7 +14,7 @@
     "dayjs": "^1.8.30",
     "node-fetch": "^2.6.1",
     "pouchdb-adapter-node-websql": "^7.0.0",
-    "rxdb": "^9.4.0",
+    "rxdb": "^13.13.7",
     "rxjs": "^6.6.0",
     "tail": "^2.0.4"
   },
